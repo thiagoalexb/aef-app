@@ -3,9 +3,12 @@
     <img src="./assets/logo.png">
     <br />
     <router-link to="/">Início</router-link>
-    <router-link to="calendar">Calendário AEF</router-link>
-    <router-link to="missing-classes">Aulas faltantes</router-link>
-    <router-link to="books">Livros à venda</router-link>
+    <router-link to="calendar">Calendário</router-link>
+    <router-link to="books">Livros</router-link>
+    <router-link to="post">Post</router-link>
+    <router-link to="event">Event</router-link>
+    <router-link to="user">Usuário</router-link>
+    <router-link to="login">Login</router-link>
 
     <router-view/>
   </div>
