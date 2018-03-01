@@ -1,6 +1,12 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <br />
+    <router-link to="/">Início</router-link>
+    <router-link to="calendar">Calendário AEF</router-link>
+    <router-link to="missing-classes">Aulas faltantes</router-link>
+    <router-link to="books">Livros à venda</router-link>
+
     <router-view/>
   </div>
 </template>
@@ -19,5 +25,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+a {
+  margin: 5px;
+  text-decoration: none;
 }
 </style>
