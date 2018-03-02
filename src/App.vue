@@ -124,18 +124,12 @@
 </template>
 
 <script>
-import sidebarBg1 from './assets/img/sidebar-1.jpg'
-import sidebarBg2 from './assets/img/sidebar-2.jpg'
-import sidebarBg3 from './assets/img/sidebar-3.jpg'
-import sidebarBg4 from './assets/img/sidebar-4.jpg'
-
-const sidebarBgArray = [ sidebarBg1, sidebarBg2, sidebarBg3, sidebarBg4 ]
-let sidebarBgTime = 5 // in seconds
+import sidebarBg from './assets/img/sidebar-1.jpg'
 
 export default {
   name: 'App',
   data: () => ({
-    sidebarBg: sidebarBg1
+    sidebarBg
   }),
   computed: {
     routes () {
@@ -150,16 +144,6 @@ export default {
     year () {
       return new Date().getFullYear()
     }
-  },
-  mounted () {
-    // firula de trocar imagens da sidebar
-    let i = 0
-    setInterval(() => {
-      this.sidebarBg = sidebarBgArray[++i]
-      if (i > 3) i = 0
-      console.log('side bar bg: ', this.sidebarBg)
-      console.log(i)
-    }, sidebarBgTime * 1000)
   }
 }
 </script>
