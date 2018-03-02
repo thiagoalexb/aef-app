@@ -14,7 +14,7 @@
                 <li
                     v-for="(route, index) in routes"
                     :key="index"
-                    :class="{active: route.isActive}">
+                    :class="sidebarItemClasses(route.isActive, index)">
                   <router-link :to="route.path">
                     <i class="material-icons">{{route.icon}}</i>
                     <p>{{route.title}}</p>
@@ -128,6 +128,13 @@
 import logo from './assets/img/aef-logo.png'
 import sidebarBg from './assets/img/sidebar-1.jpg'
 
+let i = 0
+const sidebarColors = [
+  'red',
+  'orange',
+  'blue'
+]
+
 export default {
   name: 'App',
   data: () => ({
@@ -147,27 +154,39 @@ export default {
     year () {
       return new Date().getFullYear()
     }
+  },
+  methods: {
+    sidebarItemClasses (isActive, index) {
+      return [{
+        active: isActive
+      },
+      sidebarColors[index % 3]
+      ]
+    },
+    getSidebarColor () {
+      if (i === 3) i = 0
+      return sidebarColors[i++]
+    }
   }
 }
 </script>
 
-<style lang="css">
-/*
-cores aef:
+<style lang="sass">
+@import ./assets/scss/_colors
 
-$aef-red = #da251d;
-$aef-yellow = #f8c300;
-$aef-blue = #007cc3;
-$aef-deep-blue = #28166f;
-*/
+.sidebar-wrapper ul.nav
+  li.active.orange a
+    background-color: $orange
+  li.active.red a
+    background-color: $red
+  li.active.blue a
+    background-color: $blue
 
-img.logo {
-  display: block;
-  min-width: 80px;
-  max-width: 230px;
-}
+img.logo
+  display: block
+  min-width: 80px
+  max-width: 230px
 
-footer ul li.active {
-    color: #9c27b0;
-}
+footer ul li.active
+  color: #9c27b0
 </style>
