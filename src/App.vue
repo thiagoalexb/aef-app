@@ -3,8 +3,8 @@
 
     <div class="sidebar" data-color="purple" data-image="../assets/img/sidebar-1.jpg">
         <div class="logo">
-            <a href="http://www.creative-tim.com" class="simple-text">
-                Creative Tim
+            <a href="http://aefcuritiba.com.br" class="simple-text">
+                AEF Curitiba
             </a>
         </div>
         <div class="sidebar-wrapper">
@@ -98,32 +98,23 @@
             <div class="container-fluid">
                 <nav class="pull-left">
                     <ul>
-                        <li>
-                            <a href="#">
-                                Home
-                            </a>
+
+                        <li
+                            v-for="(route, index) in routes"
+                            :key="index"
+                            :class="{active: route.isActive}">
+                          <router-link :to="route.path">
+                            <p>{{route.description}}</p>
+                            <!-- <i class="material-icons">{{route.icon}}</i> -->
+                          </router-link>
                         </li>
-                        <li>
-                            <a href="#">
-                                Company
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                Portfolio
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                Blog
-                            </a>
-                        </li>
+
                     </ul>
                 </nav>
                 <p class="copyright pull-right">
                     &copy;
-                    2018
-                    <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+                    {{year}}
+                    Desenvolvido por <a href="http://www.quitallabs.com">Quintal Labs</a>.
                 </p>
             </div>
         </footer>
@@ -144,13 +135,16 @@ export default {
         isActive: this.$route.path === r.path
       })
       )
+    },
+    year () {
+      return new Date().getFullYear()
     }
-  },
-  mounted () {
-    console.log('mounted: ', this)
   }
 }
 </script>
 
 <style>
+footer ul li.active {
+    color: #9c27b0;
+}
 </style>
