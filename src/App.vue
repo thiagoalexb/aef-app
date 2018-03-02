@@ -128,7 +128,6 @@
 import logo from './assets/img/aef-logo.png'
 import sidebarBg from './assets/img/sidebar-1.jpg'
 
-let i = 0
 const sidebarColors = [
   'red',
   'orange',
@@ -162,10 +161,6 @@ export default {
       },
       sidebarColors[index % 3]
       ]
-    },
-    getSidebarColor () {
-      if (i === 3) i = 0
-      return sidebarColors[i++]
     }
   }
 }
