@@ -4,6 +4,7 @@
     <div class="sidebar" data-color="purple" :data-image="sidebarBg">
         <div class="logo">
             <a href="http://aefcuritiba.com.br" class="simple-text">
+                <img :src="logo" class="logo" />
                 AEF Curitiba
             </a>
         </div>
@@ -124,12 +125,14 @@
 </template>
 
 <script>
+import logo from './assets/img/aef-logo.png'
 import sidebarBg from './assets/img/sidebar-1.jpg'
 
 export default {
   name: 'App',
   data: () => ({
-    sidebarBg
+    sidebarBg,
+    logo
   }),
   computed: {
     routes () {
@@ -148,7 +151,22 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css">
+/*
+cores aef:
+
+$aef-red = #da251d;
+$aef-yellow = #f8c300;
+$aef-blue = #007cc3;
+$aef-deep-blue = #28166f;
+*/
+
+img.logo {
+  display: block;
+  min-width: 80px;
+  max-width: 230px;
+}
+
 footer ul li.active {
     color: #9c27b0;
 }
