@@ -4,6 +4,12 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+// styles and icons
+import 'bootstrap/dist/css/bootstrap.css'
+import './assets/css/material-dashboard.css'
+import 'font-awesome/css/font-awesome.css'
+import 'material-design-icons/iconfont/material-icons.css'
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
