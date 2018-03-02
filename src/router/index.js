@@ -18,7 +18,7 @@ export default new Router({
       name: 'Home',
       component: Home,
       meta: {
-        description: 'Início',
+        title: 'Início',
         icon: 'dashboard'
       }
     },
@@ -27,7 +27,7 @@ export default new Router({
       name: 'Calendar',
       component: Calendar,
       meta: {
-        description: 'Calendário',
+        title: 'Calendário',
         icon: 'date_range'
       }
     },
@@ -36,7 +36,7 @@ export default new Router({
       name: 'Books',
       component: Books,
       meta: {
-        description: 'Livros',
+        title: 'Livros',
         icon: 'book'
       }
     },
@@ -45,7 +45,7 @@ export default new Router({
       name: 'Event',
       component: Event,
       meta: {
-        description: 'Eventos',
+        title: 'Eventos',
         icon: 'event'
       }
     },
@@ -54,7 +54,7 @@ export default new Router({
       name: 'Post',
       component: Post,
       meta: {
-        description: 'Postagens',
+        title: 'Postagens',
         icon: 'new_releases'
       }
     },
@@ -63,7 +63,7 @@ export default new Router({
       name: 'User',
       component: User,
       meta: {
-        description: 'Usuários',
+        title: 'Usuários',
         icon: 'person'
       }
     },
@@ -72,7 +72,7 @@ export default new Router({
       name: 'Login',
       component: Login,
       meta: {
-        description: 'Login',
+        title: 'Login',
         icon: 'vpn_key'
       }
     }

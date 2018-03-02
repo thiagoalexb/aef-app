@@ -10,12 +10,20 @@ import './assets/css/material-dashboard.css'
 import 'font-awesome/css/font-awesome.css'
 import 'material-design-icons/iconfont/material-icons.css'
 
+// template libraries
+// eslint-disable-next-line
+import './assets/js/jquery-3.2.1.min'
+import './assets/js/bootstrap.min'
+import './assets/js/material.min'
+import './assets/js/material-dashboard'
+
 Vue.config.productionTip = false
 
 const initialTitle = document.title
 
+// change page title when component router is changed
 router.beforeEach((to, from, next) => {
-  document.title = `${initialTitle} - ${to.meta.description}`
+  document.title = `${initialTitle} - ${to.meta.title}`
   next()
 })
 

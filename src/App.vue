@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="wrapper">
 
-    <div class="sidebar" data-color="purple" data-image="../assets/img/sidebar-1.jpg">
+    <div class="sidebar" data-color="purple" :data-image="sidebarBg">
         <div class="logo">
             <a href="http://aefcuritiba.com.br" class="simple-text">
                 AEF Curitiba
@@ -16,7 +16,7 @@
                     :class="{active: route.isActive}">
                   <router-link :to="route.path">
                     <i class="material-icons">{{route.icon}}</i>
-                    <p>{{route.description}}</p>
+                    <p>{{route.title}}</p>
                   </router-link>
                 </li>
 
@@ -33,7 +33,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Associação de estudos filosóficos de Curitiba - {{$route.meta.description}}</a>
+                    <a class="navbar-brand" href="#">Associação de estudos filosóficos de Curitiba - {{$route.meta.title}}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -104,7 +104,7 @@
                             :key="index"
                             :class="{active: route.isActive}">
                           <router-link :to="route.path">
-                            <p>{{route.description}}</p>
+                            <p>{{route.title}}</p>
                             <!-- <i class="material-icons">{{route.icon}}</i> -->
                           </router-link>
                         </li>
@@ -124,14 +124,25 @@
 </template>
 
 <script>
+import sidebarBg1 from './assets/img/sidebar-1.jpg'
+import sidebarBg2 from './assets/img/sidebar-2.jpg'
+import sidebarBg3 from './assets/img/sidebar-3.jpg'
+import sidebarBg4 from './assets/img/sidebar-4.jpg'
+
+const sidebarBgArray = [ sidebarBg1, sidebarBg2, sidebarBg3, sidebarBg4 ]
+let sidebarBgTime = 5 // in seconds
+
 export default {
   name: 'App',
+  data: () => ({
+    sidebarBg: sidebarBg1
+  }),
   computed: {
     routes () {
       return this.$router.options.routes.map(r => ({
         path: r.path,
         icon: r.meta.icon,
-        description: r.meta.description,
+        title: r.meta.title,
         isActive: this.$route.path === r.path
       })
       )
@@ -139,6 +150,16 @@ export default {
     year () {
       return new Date().getFullYear()
     }
+  },
+  mounted () {
+    // firula de trocar imagens da sidebar
+    let i = 0
+    setInterval(() => {
+      this.sidebarBg = sidebarBgArray[++i]
+      if (i > 3) i = 0
+      console.log('side bar bg: ', this.sidebarBg)
+      console.log(i)
+    }, sidebarBgTime * 1000)
   }
 }
 </script>
