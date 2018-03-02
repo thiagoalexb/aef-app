@@ -11,11 +11,11 @@ import 'font-awesome/css/font-awesome.css'
 import 'material-design-icons/iconfont/material-icons.css'
 
 // template libraries
-// eslint-disable-next-line
-import './assets/js/jquery-3.2.1.min'
-import './assets/js/bootstrap.min'
+// import 'jquery/dist/jquery'
+import 'bootstrap'
 import './assets/js/material.min'
 import './assets/js/material-dashboard'
+import './assets/js/bootstrap-notify'
 
 Vue.config.productionTip = false
 
