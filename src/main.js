@@ -12,6 +12,13 @@ import 'material-design-icons/iconfont/material-icons.css'
 
 Vue.config.productionTip = false
 
+const initialTitle = document.title
+
+router.beforeEach((to, from, next) => {
+  document.title = `${initialTitle} - ${to.meta.description}`
+  next()
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

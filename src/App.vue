@@ -10,46 +10,13 @@
         <div class="sidebar-wrapper">
             <ul class="nav">
 
-                <li class="active">
-                  <router-link to="/">
-                    <i class="material-icons">dashboard</i>
-                    <p>Início</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="calendar">
-                    <i class="material-icons">date_range</i>
-                    <p>Calendário</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="books">
-                    <i class="material-icons">book</i>
-                    <p>Livros</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="post">
-                    <i class="material-icons">new_releases</i>
-                    <p>Postagens</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="event">
-                    <i class="material-icons">event</i>
-                    <p>Eventos</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="user">
-                    <i class="material-icons">person</i>
-                    <p>Usuário</p>
-                  </router-link>
-                </li>
-                <li>
-                  <router-link to="login">
-                    <i class="material-icons">vpn_key</i>
-                    <p>Login</p>
+                <li
+                    v-for="(route, index) in routes"
+                    :key="index"
+                    :class="{active: route.isActive}">
+                  <router-link :to="route.path">
+                    <i class="material-icons">{{route.icon}}</i>
+                    <p>{{route.description}}</p>
                   </router-link>
                 </li>
 
@@ -66,7 +33,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"> Material Dashboard </a>
+                    <a class="navbar-brand" href="#">Associação de estudos filosóficos de Curitiba - {{$route.meta.description}}</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -166,13 +133,22 @@
 </template>
 
 <script>
-// import './assets/css/bootstrap.min.css'
-// import '../static/assets/css/material-dashboad'
-// import '../static/assets/css/font-awesome.min'
-// import '../static/assets/css/material-icons-roboto'
-
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    routes () {
+      return this.$router.options.routes.map(r => ({
+        path: r.path,
+        icon: r.meta.icon,
+        description: r.meta.description,
+        isActive: this.$route.path === r.path
+      })
+      )
+    }
+  },
+  mounted () {
+    console.log('mounted: ', this)
+  }
 }
 </script>
 

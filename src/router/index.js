@@ -16,37 +16,65 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: {
+        description: 'Início',
+        icon: 'dashboard'
+      }
     },
     {
       path: '/calendar',
       name: 'Calendar',
-      component: Calendar
+      component: Calendar,
+      meta: {
+        description: 'Calendário',
+        icon: 'date_range'
+      }
     },
     {
       path: '/books',
       name: 'Books',
-      component: Books
+      component: Books,
+      meta: {
+        description: 'Livros',
+        icon: 'book'
+      }
     },
     {
       path: '/event',
       name: 'Event',
-      component: Event
+      component: Event,
+      meta: {
+        description: 'Eventos',
+        icon: 'event'
+      }
     },
     {
       path: '/post',
       name: 'Post',
-      component: Post
+      component: Post,
+      meta: {
+        description: 'Postagens',
+        icon: 'new_releases'
+      }
     },
     {
       path: '/user',
       name: 'User',
-      component: User
+      component: User,
+      meta: {
+        description: 'Usuários',
+        icon: 'person'
+      }
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        description: 'Login',
+        icon: 'vpn_key'
+      }
     }
   ]
 })
