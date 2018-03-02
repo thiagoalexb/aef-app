@@ -3,11 +3,35 @@
     <h1>{{ msg }}</h1>
 
     <h2>Demonstração de mensagens</h2>
-    <button type="button" @click="notify.success('sucesso <i class=\'material-icons\'>thumb_up</i>')">sucesso!</button>
-    <button type="button" @click="notify.warning('atenção')">atenção</button>
-    <button type="button" @click="notify.info('informação')">informação</button>
-    <button type="button" @click="notify.danger('erro')">erro!</button>
-    <button type="button" @click="outro">outro</button>
+    <button
+      type="button"
+      class="btn btn-success"
+      @click="notify.success('sucesso <i class=\'material-icons\'>thumb_up</i>')">
+      sucesso!</button>
+    <button
+      type="button"
+      class="btn btn-warning"
+      @click="notify.warning('atenção')">
+      atenção
+    </button>
+    <button
+      type="button"
+      class="btn btn-info"
+      @click="notify.info('informação')">
+      informação
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      @click="notify.danger('erro <i class=\'material-icons\'>thumb_down</i>')">
+      erro!
+    </button>
+    <button
+      type="button"
+      class="btn btn-default"
+      @click="outro">
+      outro
+    </button>
   </div>
 </template>
 
