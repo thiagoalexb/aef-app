@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/components/Home'
-import Calendar from '@/components/Calendar'
-import Books from '@/components/Books'
-import Event from '@/components/Event'
-import Post from '@/components/Post'
-import User from '@/components/User'
-import Login from '@/components/Login'
+import Home from '@/components/admin/Home'
+import Calendar from '@/components/admin/Calendar'
+import Books from '@/components/admin/Books'
+import Event from '@/components/admin/Event'
+import Post from '@/components/admin/Post'
+import User from '@/components/admin/User'
+import UserEdit from '@/components/admin/UserEdit'
+import Login from '@/components/admin/Login'
 
 Vue.use(Router)
 
@@ -65,7 +66,14 @@ export default new Router({
       meta: {
         title: 'Usuários',
         icon: 'person'
-      }
+      },
+      children: [
+        {
+          path: 'edit/:id',
+          component: UserEdit,
+          props: true
+        }
+      ]
     },
     {
       path: '/login',
