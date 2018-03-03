@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import logo from './assets/img/aef-logo.png'
+import logo from './assets/img/aef-logo-sidebar.png'
 import sidebarBg from './assets/img/sidebar-1.jpg'
 
 const sidebarColors = [
@@ -185,6 +185,9 @@ img.logo
   display: block
   min-width: 80px
   max-width: 230px
+  max-height: 100px
+  min-height: 50px
+  margin: 0 auto
 
 footer ul li.active
   color: #9c27b0
