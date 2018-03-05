@@ -4,7 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import * as store from './store'
+import { api, http } from './shared/api'
+import notify from './shared/notify'
 
 // styles and icons
 import 'bootstrap/dist/css/bootstrap.css'
@@ -21,6 +22,9 @@ import './assets/js/bootstrap-notify'
 import './assets/js/arrive.min'
 
 Vue.config.productionTip = false
+Vue.prototype.$api = api
+Vue.prototype.$http = http
+Vue.prototype.$notify = notify
 
 const initialTitle = document.title
 
@@ -29,8 +33,6 @@ router.beforeEach((to, from, next) => {
   document.title = `${initialTitle} - ${to.meta.title}`
   next()
 })
-
-Vue.prototype.$store = store
 
 /* eslint-disable no-new */
 new Vue({

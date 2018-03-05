@@ -32,6 +32,12 @@
       @click="outro">
       outro
     </button>
+     <button
+      type="button"
+      class="btn btn-primary"
+      @click="novo">
+      novo uso
+    </button>
   </div>
 </template>
 
@@ -54,6 +60,9 @@ export default {
         10000 // time
       )
       console.log(notify)
+    },
+    novo () {
+      this.$notify.success('novo <b>uso!</b> :)')
     }
   }
 }

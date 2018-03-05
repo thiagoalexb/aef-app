@@ -59,8 +59,8 @@ export default {
     }
   },
   created () {
-    this.$store.user.get().then(users => {
-      this.users = users
+    this.$api.user.getAll().then(data => {
+      this.users = data
     })
   }
 }
