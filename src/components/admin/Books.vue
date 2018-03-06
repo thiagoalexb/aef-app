@@ -111,7 +111,7 @@ export default {
       this.$api.book.add(this.newBook)
         .then(data => {
           this.books.push(data)
-          this.$refs.addBookModal.show(false)
+          this.$refs.addBookModal.hide()
           this.newBook = { isSale: true }
         })
     },

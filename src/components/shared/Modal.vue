@@ -6,7 +6,7 @@
       :class="openButtonClass"
       data-toggle="modal"
       :data-target="id"
-      @click="show(true)">
+      @click="show">
       {{openButtonTitle}}
       <slot name="open-button"></slot>
     </button>
@@ -87,13 +87,12 @@ export default {
         break
     }
   },
-  mounted () {
-    // document.body.append(this.$el.lastElementChild)
-  },
   methods: {
-    show (show) {
-      if (show) $(this.$el.lastElementChild).modal('show')
-      else $(this.$el.lastElementChild).modal('hide')
+    show () {
+      $(this.$el.lastElementChild).modal('show')
+    },
+    hide () {
+      $(this.$el.lastElementChild).modal('hide')
     }
   }
 }
