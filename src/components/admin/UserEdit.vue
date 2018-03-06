@@ -12,75 +12,72 @@
         <div class="card-content">
           <form>
             <div class="row">
-              <div class="col-md-5">
-                <div class="form-group label-floating">
-                  <label class="control-label">Company (disabled)</label>
-                  <input type="text" class="form-control" disabled>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group label-floating">
-                  <label class="control-label">Username</label>
-                  <input type="text" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group label-floating">
-                  <label class="control-label">Email address</label>
-                  <input type="email" class="form-control">
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group label-floating">
-                  <label class="control-label">Fist Name</label>
-                  <input type="text" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group label-floating">
-                  <label class="control-label">Last Name</label>
-                  <input type="text" class="form-control">
-                </div>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-12">
                 <div class="form-group label-floating">
-                  <label class="control-label">Adress</label>
-                  <input type="text" class="form-control">
+                  <label class="control-label">Id</label>
+                  <span>{{user.id}}</span>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group label-floating">
-                  <label class="control-label">City</label>
-                  <input type="text" class="form-control">
+                  <label class="control-label">Login</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="user.username">
                 </div>
               </div>
-              <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="form-group label-floating">
-                  <label class="control-label">Country</label>
-                  <input type="text" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group label-floating">
-                  <label class="control-label">Postal Code</label>
-                  <input type="text" class="form-control">
+                  <label class="control-label">E-mail</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    v-model="user.email">
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>About Me</label>
-                  <div class="form-group label-floating">
-                    <label class="control-label"> Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.</label>
-                    <textarea class="form-control" rows="5"></textarea>
-                  </div>
+              <div class="col-md-4">
+                <div class="form-group label-floating">
+                  <label class="control-label">Nome</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="user.firstName">
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group label-floating">
+                  <label class="control-label">Sobrenome</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="user.lastName">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group label-floating">
+                  <label class="control-label">Data de Nascimento</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="user.dateOfBirth">
+                </div>
+              </div>
+              <div class="col-md-2"></div>
+              <div class="col-md-2">
+                <div class="form-group label-floating">
+                  <label class="control-label">E-mail confirmado</label>
+                  <input
+                    type="checkbox"
+                    class="form-control"
+                    disabled
+                    v-model="user.isVerified">
                 </div>
               </div>
             </div>
@@ -118,13 +115,21 @@
 </template>
 
 <script>
+import utils from '@/shared/utils'
 export default {
   name: 'UserEdit',
   props: {
     id: {
-      type: Number,
+      type: String,
+      required: true
+    },
+    user: {
+      type: Object,
       required: true
     }
+  },
+  created () {
+    utils.convertDateInObject(this.user)
   }
 }
 </script>

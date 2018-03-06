@@ -66,14 +66,16 @@ export default new Router({
       meta: {
         title: 'Usuários',
         icon: 'person'
-      },
-      children: [
-        {
-          path: 'edit/:id',
-          component: UserEdit,
-          props: true
-        }
-      ]
+      }
+    },
+    {
+      path: '/user/edit/:id',
+      name: 'UserEdit',
+      component: UserEdit,
+      props: true,
+      meta: {
+        title: 'Edição de usuário'
+      }
     },
     {
       path: '/login',
