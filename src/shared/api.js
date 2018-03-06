@@ -1,5 +1,35 @@
 import axios from 'axios'
 import notify from './notify'
+import { kebabToCamelCase } from './changeCase'
+
+/*
+Mounted routes:
+
+common:
+GET    book/get-all   as api.book.getAll()
+GET    book/get-by-id as api.book.getById()
+PUT    book/update    as api.book.update()
+POST   book/add       as api.book.add()
+DELETE book/delete    as api.book.delete()
+
+mounted the same for:
+event
+post
+tag
+user
+
+Uncommon routes:
+GET  user/verify-password as api.user.verifyPassword()
+POST user/update-password as api.user.updatePassword()
+POST login/login          as api.login.login()
+
+and for all routes there are a method for cancel request:
+ex.:              api.user.getAll()
+method to cancel: api.cancel.user.getAll()
+
+ex.:              api.book.add()
+method to cancel: api.cancel.book.add()
+*/
 
 const user = JSON.parse(localStorage.user ? localStorage.user : null)
 
@@ -23,95 +53,119 @@ const apiCommonRoutes = [
   'user'
 ]
 
-const apiCommonSubRoutes = {
-  getAll: {
+const apiCommonSubRoutes = [
+  {
     path: 'get-all',
     verb: 'get'
   },
-  getById: {
+  {
     path: 'get-by-id',
     verb: 'get'
   },
-  add: {
+  {
     path: 'add',
     verb: 'post'
   },
-  update: {
+  {
     path: 'update',
     verb: 'put'
   },
-  delete: {
+  {
     path: 'delete',
     verb: 'delete'
   }
-}
+]
 
-// todo: handle error properly
-const apiHandleError = (err, route) => {
-  console.log(err)
-  notify.danger('Houve um erro no servidor')
-  throw Error(`Server error at ${route.verb} ${route.route}/${route.path}`)
-}
-
-const api = {}
+const apiRoutes = []
 
 // mount api common routes
 // ex.: api.book.getAll() (returns a promise)
 for (let route of apiCommonRoutes) {
-  api[route] = {}
-  for (let keySubRoute in apiCommonSubRoutes) {
-    const subRoute = apiCommonSubRoutes[keySubRoute]
+  for (let subRoute of apiCommonSubRoutes) {
     const { path, verb } = subRoute
-
-    api[route][keySubRoute] = (param, handleError = true) => {
-      let promise = null
-      if (param) {
-        if (verb === 'get') param = { params: param }
-        else if (verb === 'delete') param = { data: param }
-
-        promise = http[verb](`${route}/${path}`, param)
-      } else {
-        promise = http[verb](`${route}/${path}`)
-      }
-
-      return promise
-        .then(res => {
-          if (res && res.data) {
-            if ('success' in res.data) {
-              if (res.data.success) {
-                return res.data.data
-              } else if (handleError) {
-                apiHandleError(res.data.data, {
-                  route,
-                  path,
-                  verb
-                })
-              }
-            }
-            return res.data
-          } else {
-            return res
-          }
-        })
-        .catch((err, a, b, c, d) => {
-          if (handleError) {
-            console.log(err)
-            apiHandleError(err, {
-              route,
-              path,
-              verb
-            })
-          }
-        })
-    }
+    apiRoutes.push(`${verb} ${route}/${path}`)
   }
 }
 
 // mount uncommon routes
-api.user.verifyPassword = param => http.get('user/verify-password', param)
-api.user.updatePassword = param => http.post('user/update-password', param)
+apiRoutes.push('get user/verify-password')
+apiRoutes.push('post user/update-password')
+apiRoutes.push('post login/login')
 
-api.login = {}
-api.login.login = param => http.post('login/login', param)
+function routeExtractDetails (route) {
+  const origin = route
+  route = route.split(' ')
+  const path = route[1].split('/')
+  return {
+    origin,
+    verb: route[0],
+    route: path[0],
+    path: route[1],
+    pathSubRoute: path[1],
+    subRoute: kebabToCamelCase(path[1])
+  }
+}
+
+const api = { cancel: {} }
+
+// create all route methods
+for (let pathRoute of apiRoutes) {
+  let route = routeExtractDetails(pathRoute)
+
+  if (!(route.route in api.cancel)) {
+    api.cancel[route.route] = {}
+  }
+  api.cancel[route.route][route.subRoute] = null
+
+  if (!(route.route in api)) {
+    api[route.route] = {}
+  }
+  api[route.route][route.subRoute] = requestHandler.bind(route)
+}
+
+// todo: handle error properly
+function apiHandleError (err, route) {
+  if (!axios.isCancel(err)) {
+    console.log(err)
+    notify.danger('Houve um erro no servidor')
+    throw Error(`Server error at ${route.verb} ${route.route}/${route.path}`)
+  }
+}
+
+// request handler
+function requestHandler (param, handleError = true) {
+  const { path, verb, route, subRoute } = this
+  const cancelSource = axios.CancelToken.source()
+  const options = { cancelToken: cancelSource.token }
+
+  api.cancel[route][subRoute] = cancelSource.cancel
+
+  if (param) {
+    if (verb === 'get') param = { params: param }
+    else if (verb === 'delete') param = { data: param }
+  }
+
+  return http[verb](path, param, options)
+    .then(res => {
+      if (res && res.data) {
+        if ('success' in res.data) {
+          if (res.data.success) {
+            return res.data.data
+          } else if (handleError) {
+            apiHandleError(res.data.data, this)
+          }
+        }
+        return res.data
+      } else {
+        return res
+      }
+    })
+    .catch((err) => {
+      if (handleError) {
+        console.log(err)
+        apiHandleError(err, this)
+      }
+    })
+}
 
 export { api }
