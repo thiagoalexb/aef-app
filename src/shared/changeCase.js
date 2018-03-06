@@ -16,3 +16,5 @@ export const fromArray = (arr) => {
     arr[idx] = fromObject(obj)
   })
 }
+
+export const kebabToCamelCase = str => str.replace(/-([a-z])/g, g => g[1].toUpperCase())
