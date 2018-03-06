@@ -3,15 +3,14 @@
 
     <div class="col-md-8">
       <div class="card">
-
         <div class="card-header" data-background-color="purple">
-          <h4 class="title">Edit Profile</h4>
-          <p class="category">Complete your profile</p>
+          <h4 class="title">{{isAdd ? 'Cadastrar usuário' : 'Alterar usuário'}}</h4>
+          <p class="category">Formulário de {{isAdd ? 'inclusão' : 'alteração'}} de usuário</p>
         </div>
 
         <div class="card-content">
-          <form>
-            <div class="row">
+          <form @submit="isAdd ? add() : update()">
+            <div class="row" v-if="user.id">
               <div class="col-md-12">
                 <div class="form-group label-floating">
                   <label class="control-label">Id</label>
@@ -64,7 +63,7 @@
                 <div class="form-group label-floating">
                   <label class="control-label">Data de Nascimento</label>
                   <input
-                    type="text"
+                    type="date"
                     class="form-control"
                     v-model="user.dateOfBirth">
                 </div>
@@ -83,8 +82,9 @@
             </div>
 
             <button type="submit" class="btn btn-primary pull-right">
-              Update Profile
+              {{isAdd ? 'Cadastrar' : 'Atualizar' }}
             </button>
+            <router-link to="/user" class="btn btn-link pull-right">Voltar</router-link>
 
             <div class="clearfix"></div>
           </form>
@@ -97,16 +97,19 @@
       <div class="card card-profile">
         <div class="card-avatar">
           <a href="#pablo">
-            <img class="img" />
+            <img class="img" src="@/assets/img/aef-logo.png" style="background-color: white" />
           </a>
         </div>
         <div class="content">
-          <h6 class="category text-gray">CEO / Co-Founder</h6>
-          <h4 class="card-title">Alec Thompson</h4>
+          <h6 class="category text-gray">Upload de imagem de perfil</h6>
+          <h4 class="card-title">{{user.firstName}} {{user.lastName}}</h4>
           <p class="card-content">
-            Don't be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...
+            Faça o upload da imagem de perfil de usuário. Entretanto o usuário terá a opção de fazer o upload ele mesmo mais tarde.
           </p>
-          <a href="#pablo" class="btn btn-primary btn-round">Follow</a>
+          <a href="#pablo" class="btn btn-primary btn-round">
+            <i class="material-icons">file_upload</i>
+            Upload
+          </a>
         </div>
       </div>
     </div>
@@ -121,15 +124,37 @@ export default {
   props: {
     id: {
       type: String,
-      required: true
+      default: null
     },
     user: {
       type: Object,
-      required: true
+      default: () => ({})
+    }
+  },
+  data () {
+    return {
+      isAdd: false
     }
   },
   created () {
+    if (this.$attrs.add) this.isAdd = this.$attrs.add
     utils.convertDateInObject(this.user)
+  },
+  methods: {
+    add () {
+      this.$api.user.add(this.user)
+        .then(data => {
+          this.$notify.success('Usuário salvo com sucesso')
+          this.$router.push('/user')
+        })
+    },
+    update () {
+      this.$api.user.update(this.user)
+        .then(data => {
+          this.$notify.success('Usuário salvo com sucesso')
+          this.$router.push('/user')
+        })
+    }
   }
 }
 </script>

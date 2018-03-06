@@ -2,6 +2,10 @@
   <div class="col-md-12">
     <div class="card">
       <div class="card-header" data-background-color="blue">
+        <router-link to="/user/add" class="pull-right">
+          <i class="material-icons">add</i>
+        </router-link>
+
         <h4 class="title">Usuários</h4>
         <p class="category">Usuário com permissão de acesso ao sistema</p>
       </div>
