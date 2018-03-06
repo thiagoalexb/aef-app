@@ -32,11 +32,17 @@
       @click="outro">
       outro
     </button>
-     <button
+    <button
       type="button"
       class="btn btn-primary"
       @click="novo">
       novo uso
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      @click="$notify.info('novo <i>uso!</i> :B')">
+      novo uso 2
     </button>
   </div>
 </template>
