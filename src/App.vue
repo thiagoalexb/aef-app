@@ -15,7 +15,7 @@
               v-for="(route, index) in routes"
               :key="index"
               :class="sidebarItemClasses(route.isActive, index)">
-            <router-link :to="route.path" v-if="route.icon">
+            <router-link :to="route.path" v-if="route.show">
               <i class="material-icons">{{route.icon}}</i>
               <p>{{route.title}}</p>
             </router-link>
@@ -148,9 +148,10 @@ export default {
     routes () {
       return this.$router.options.routes.map(r => ({
         path: r.path,
-        icon: r.meta.icon,
-        title: r.meta.title,
-        isActive: this.$route.path === r.path
+        icon: r.meta ? r.meta.icon : null,
+        title: r.meta ? r.meta.title : null,
+        isActive: this.$route.path === r.path,
+        show: r.meta && r.meta.title && r.meta.icon
       })
       )
     },

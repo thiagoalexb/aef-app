@@ -69,13 +69,16 @@ export default new Router({
       }
     },
     {
+      path: '/user/add',
+      name: 'UserAdd',
+      component: UserEdit,
+      props: { add: true }
+    },
+    {
       path: '/user/edit/:id',
       name: 'UserEdit',
       component: UserEdit,
-      props: true,
-      meta: {
-        title: 'Edição de usuário'
-      }
+      props: true
     },
     {
       path: '/login',
