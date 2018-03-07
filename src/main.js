@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 
 import { api, http } from './shared/api'
+import { getUser } from './shared/authentication'
 import notify from './shared/notify'
 
 // styles and icons
@@ -28,8 +29,11 @@ Vue.prototype.$notify = notify
 
 const initialTitle = document.title
 
-// change page title when component router is changed
 router.beforeEach((to, from, next) => {
+  // send to login page if necessary
+  let user = getUser()
+  if ((!user || !user.accessToken) && to.name !== 'Login') next('/login')
+  // change page title when component router is changed
   document.title = `${initialTitle} - ${to.meta.title}`
   next()
 })

@@ -15,6 +15,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '*',
+      redirect: '/'
+    },
+    {
       path: '/',
       name: 'Home',
       component: Home,
@@ -72,13 +76,19 @@ export default new Router({
       path: '/user/add',
       name: 'UserAdd',
       component: UserEdit,
-      props: { add: true }
+      props: { add: true },
+      meta: {
+        title: 'Cadastro de usuário'
+      }
     },
     {
       path: '/user/edit/:id',
       name: 'UserEdit',
       component: UserEdit,
-      props: true
+      props: true,
+      meta: {
+        title: 'Alteração de usuário'
+      }
     },
     {
       path: '/login',
@@ -88,6 +98,11 @@ export default new Router({
         title: 'Login',
         icon: 'vpn_key'
       }
+    },
+    {
+      path: '/logoff',
+      name: 'Logoff',
+      component: Login
     }
   ]
 })

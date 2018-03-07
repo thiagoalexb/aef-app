@@ -1,5 +1,6 @@
 import axios from 'axios'
 import notify from './notify'
+import { getUser } from './authentication'
 import { kebabToCamelCase } from './changeCase'
 
 /*
@@ -31,15 +32,15 @@ ex.:              api.book.add()
 method to cancel: api.cancel.book.add()
 */
 
-const user = JSON.parse(localStorage.user ? localStorage.user : null)
+const user = getUser()
 
 const httpConfig = {
   baseURL: process.env.API_URL
 }
 
-if (user && user.token) {
+if (user && user.accessToken) {
   httpConfig.headers = {
-    Authorization: `Bearer ${user.token}`
+    Authorization: `Bearer ${user.accessToken}`
   }
 }
 
@@ -148,13 +149,6 @@ function requestHandler (param, handleError = true) {
   return http[verb](path, param, options)
     .then(res => {
       if (res && res.data) {
-        if ('success' in res.data) {
-          if (res.data.success) {
-            return res.data.data
-          } else if (handleError) {
-            apiHandleError(res.data.data, this)
-          }
-        }
         return res.data
       } else {
         return res

@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="wrapper">
 
-    <div class="sidebar" data-color="purple" :data-image="sidebarBg">
+    <div v-if="!isLogin" class="sidebar" data-color="purple" :data-image="sidebarBg">
       <div class="logo">
         <a href="http://aefcuritiba.com.br" class="simple-text">
-          <img :src="logo" class="logo" />
+          <img src="./assets/img/aef-logo-sidebar.png" class="logo" />
           AEF Curitiba
         </a>
       </div>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="main-panel">
-      <nav class="navbar navbar-transparent navbar-absolute">
+      <nav v-if="!isLogin" class="navbar navbar-transparent navbar-absolute">
         <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse">
@@ -39,30 +39,15 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-              <li>
-                <a href="#pablo" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="material-icons">dashboard</i>
-                  <p class="hidden-lg hidden-md">Dashboard</p>
-                </a>
-              </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <i class="material-icons">notifications</i>
-                  <span class="notification">5</span>
+                  <span class="notification">2</span>
                   <p class="hidden-lg hidden-md">Notifications</p>
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a href="#">Mike John responded to your email</a>
-                  </li>
-                  <li>
-                    <a href="#">You have 5 new tasks</a>
-                  </li>
-                  <li>
-                    <a href="#">You're now friend with Andrew</a>
-                  </li>
-                  <li>
-                    <a href="#">Another Notification</a>
+                    <a href="#">Another One</a>
                   </li>
                   <li>
                     <a href="#">Another One</a>
@@ -74,11 +59,24 @@
                   <i class="material-icons">person</i>
                   <p class="hidden-lg hidden-md">Profile</p>
                 </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <router-link :to="{ name: 'UserEdit', params: { id: user.id }}">
+                      Visualizar perfil
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link to="/logoff">
+                      <i class="material-icons">lock_open</i>
+                      Deslogar-se
+                    </router-link>
+                  </li>
+                </ul>
               </li>
             </ul>
             <form class="navbar-form navbar-right" role="search">
               <div class="form-group  is-empty">
-                <input type="text" class="form-control" placeholder="Search">
+                <input type="text" class="form-control" placeholder="Busca">
                 <span class="material-input"></span>
               </div>
               <button type="submit" class="btn btn-white btn-round btn-just-icon">
@@ -100,7 +98,7 @@
 
       <footer class="footer">
         <div class="container-fluid">
-          <nav class="pull-left">
+          <nav v-if="!isLogin" class="pull-left">
             <ul>
 
               <li
@@ -129,8 +127,8 @@
 </template>
 
 <script>
-import logo from './assets/img/aef-logo-sidebar.png'
 import sidebarBg from './assets/img/sidebar-1.jpg'
+import { getUser } from '@/shared/authentication'
 
 const sidebarColors = [
   'red',
@@ -142,7 +140,7 @@ export default {
   name: 'App',
   data: () => ({
     sidebarBg,
-    logo
+    user: getUser()
   }),
   computed: {
     routes () {
@@ -157,6 +155,9 @@ export default {
     },
     year () {
       return new Date().getFullYear()
+    },
+    isLogin () {
+      return this.$route.name === 'Login'
     }
   },
   methods: {

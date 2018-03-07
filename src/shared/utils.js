@@ -20,6 +20,6 @@ export default {
     return Math.floor(Math.random() * (max - min + 1)) + min
   },
   randomAefColors () {
-    return ['red', 'yellow', 'blue'][this.randomBetween(0, 2)]
+    return ['red', 'orange', 'blue'][this.randomBetween(0, 2)]
   }
 }
