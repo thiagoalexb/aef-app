@@ -27,6 +27,8 @@ const store = {
   user: getUser()
 }
 
+console.log('env: ', process.env)
+
 Vue.config.productionTip = false
 Vue.prototype.$api = api
 Vue.prototype.$http = http
