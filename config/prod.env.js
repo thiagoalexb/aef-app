@@ -1,5 +1,5 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: '"http://aefapi.azurewebsites.net/api/"'
+  API_URL: '"https://aefapi.azurewebsites.net/api/"'
 }
