@@ -1,6 +1,5 @@
 import axios from 'axios'
 import notify from './notify'
-import { getUser } from './authentication'
 import { kebabToCamelCase } from './changeCase'
 
 /*
@@ -32,19 +31,25 @@ ex.:              api.book.add()
 method to cancel: api.cancel.book.add()
 */
 
-const user = getUser()
+export let http = null
 
-const httpConfig = {
-  baseURL: process.env.API_URL
-}
+export function mountHttp () {
+  const user = JSON.parse(localStorage.user ? localStorage.user : null)
 
-if (user && user.accessToken) {
-  httpConfig.headers = {
-    Authorization: `Bearer ${user.accessToken}`
+  const httpConfig = {
+    baseURL: process.env.API_URL
   }
+
+  if (user && user.accessToken) {
+    httpConfig.headers = {
+      Authorization: `Bearer ${user.accessToken}`
+    }
+  }
+
+  http = axios.create(httpConfig)
 }
 
-export const http = axios.create(httpConfig)
+mountHttp()
 
 const apiCommonRoutes = [
   'book',

@@ -1,3 +1,5 @@
+import { mountHttp } from './api'
+
 export const getUser = () => {
   const user = JSON.parse(localStorage.user ? localStorage.user : null)
   if (user) {
@@ -18,7 +20,12 @@ export const setUser = (data) => {
     expiration: new Date(data.expiration),
     accessToken: data.accessToken
   })
+
+  mountHttp()
 }
 
 // eslint-disable-next-line
-export const logoff = () => localStorage.user = null
+export const logoff = () => {
+  localStorage.user = null
+  mountHttp()
+}
