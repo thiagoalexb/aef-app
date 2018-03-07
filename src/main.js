@@ -22,17 +22,23 @@ import './assets/js/material-dashboard'
 import './assets/js/bootstrap-notify'
 import './assets/js/arrive.min'
 
+// simple store for logged user
+const store = {
+  user: getUser()
+}
+
 Vue.config.productionTip = false
 Vue.prototype.$api = api
 Vue.prototype.$http = http
 Vue.prototype.$notify = notify
+Vue.prototype.$store = store
 
 const initialTitle = document.title
 
 router.beforeEach((to, from, next) => {
   // send to login page if necessary
-  let user = getUser()
-  if ((!user || !user.accessToken) && to.name !== 'Login') next('/login')
+  store.user = getUser()
+  if ((!store.user || !store.user.accessToken) && to.name !== 'Login') next('/login')
   // change page title when component router is changed
   document.title = `${initialTitle} - ${to.meta.title}`
   next()

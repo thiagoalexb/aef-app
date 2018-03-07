@@ -4,12 +4,18 @@
     <div class="col-md-4 col-md-offset-3">
       <div class="card">
         <div class="card-header" :data-background-color="color">
-          <h4 class="title">Login</h4>
-          <p class="category">Informe seu login para acessar o sistema</p>
+          <img
+            src="@/../static/favicon64.png"
+            alt="aef logo"
+            style="width: 64px; margin-right: 15px;"
+            class="pull-left">
+            <b class="pull-right" v-show="logging">logando...</b>
+            <h4 class="title">Login</h4>
+            <p class="category">informe seu login para acessar o sistema</p>
         </div>
 
         <div class="card-content">
-          <form @submit="login">
+          <form @submit.prevent="login">
 
             <div class="row">
               <div class="col-md-12">
@@ -18,7 +24,10 @@
                   <input
                     type="email"
                     class="form-control"
-                    v-model="user.email">
+                    v-model="user.email"
+                    ref="email"
+                    :disabled="logging"
+                    autofocus>
                 </div>
               </div>
             </div>
@@ -29,12 +38,16 @@
                   <input
                     type="password"
                     class="form-control"
-                    v-model="user.password">
+                    v-model="user.password"
+                    :disabled="logging">
                 </div>
               </div>
             </div>
 
-            <button type="submit" :class="['btn', `btn-${color2}`, 'pull-right']">
+            <button
+              type="submit"
+              :disabled="logging || !user.email || !user.password"
+              :class="['btn', `btn-${color2}`, 'pull-right']">
               <i class="material-icons" style="margin-right: 5px">vpn_key</i>Login
             </button>
 
@@ -57,7 +70,8 @@ export default {
   data () {
     return {
       user: {},
-      color: utils.randomAefColors()
+      color: utils.randomAefColors(),
+      logging: false
     }
   },
   computed: {
@@ -71,6 +85,7 @@ export default {
   },
   methods: {
     login () {
+      this.logging = true
       this.$api.login.login(this.user)
         .then(data => {
           if (data && data.authenticated) {
@@ -79,23 +94,34 @@ export default {
             // get user id
             this.$api.user.verifyPassword({email: this.user.email})
               .then(userVerified => {
+                this.logging = false
                 if (userVerified.success) {
                   data.id = userVerified.data.userId
                   authentication.setUser(data)
+                  this.$store.user = authentication.getUser()
+                  this.$router.push({ name: 'Home' })
                 } else {
                   this.error(data)
                 }
               })
-            this.$router.push({ name: 'Home' })
+              .catch(() => {
+                this.logging = false
+              })
           } else {
             this.error(data)
           }
         })
+        .catch(() => {
+          this.logging = false
+          this.$refs.email.focus()
+        })
     },
     error (data) {
+      this.logging = false
       let { message } = data
       if (!message) message = 'Ocorreu um problema ao fazer o login'
       this.$notify.danger(message)
+      this.$nextTick(() => this.$refs.email.focus())
     }
   },
   created () {

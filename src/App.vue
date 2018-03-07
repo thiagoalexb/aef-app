@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="wrapper">
 
-    <div v-if="!isLogin" class="sidebar" data-color="purple" :data-image="sidebarBg">
+    <div v-show="!isLogin" class="sidebar" data-color="purple" :data-image="sidebarBg">
       <div class="logo">
         <a href="http://aefcuritiba.com.br" class="simple-text">
           <img src="./assets/img/aef-logo-sidebar.png" class="logo" />
@@ -47,10 +47,10 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a href="#">Another One</a>
+                    <a href="#">Um exemplo de notificação</a>
                   </li>
                   <li>
-                    <a href="#">Another One</a>
+                    <a href="#">Outro exemplo de notificação</a>
                   </li>
                 </ul>
               </li>
@@ -61,7 +61,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <router-link :to="{ name: 'UserEdit', params: { id: user.id }}">
+                    <router-link :to="{ name: 'UserEdit', params: { id: this.$store.user.id }}">
                       Visualizar perfil
                     </router-link>
                   </li>
@@ -74,9 +74,16 @@
                 </ul>
               </li>
             </ul>
-            <form class="navbar-form navbar-right" role="search">
+            <form
+              @submit.prevent="buscar"
+              class="navbar-form navbar-right"
+              role="search">
               <div class="form-group  is-empty">
-                <input type="text" class="form-control" placeholder="Busca">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Busca"
+                  v-model="busca">
                 <span class="material-input"></span>
               </div>
               <button type="submit" class="btn btn-white btn-round btn-just-icon">
@@ -91,7 +98,7 @@
       <div class="content">
           <div class="container-fluid">
 
-            <router-view/>
+            <router-view />
 
           </div>
       </div>
@@ -128,7 +135,6 @@
 
 <script>
 import sidebarBg from './assets/img/sidebar-1.jpg'
-import { getUser } from '@/shared/authentication'
 
 const sidebarColors = [
   'red',
@@ -140,7 +146,7 @@ export default {
   name: 'App',
   data: () => ({
     sidebarBg,
-    user: getUser()
+    busca: ''
   }),
   computed: {
     routes () {
@@ -167,6 +173,10 @@ export default {
       },
       sidebarColors[index % 3]
       ]
+    },
+    buscar () {
+      this.$notify.info(`Não implementado ainda... Você digitou: ${this.busca}`)
+      this.busca = ''
     }
   }
 }
