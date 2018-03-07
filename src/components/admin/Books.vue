@@ -124,6 +124,12 @@ export default {
   },
   components: {
     Modal
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.books === null) { // loading
+      this.$api.cancel.book.getAll()
+    }
+    next()
   }
 }
 </script>
