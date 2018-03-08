@@ -132,7 +132,7 @@ for (let pathRoute of apiRoutes) {
 // todo: handle error properly
 function apiHandleError (err, route) {
   if (!axios.isCancel(err)) {
-    console.log(err)
+    console.error(err)
     notify.danger('Houve um erro no servidor')
     throw Error(`Server error at ${route.verb} ${route.route}/${route.path}`)
   }
@@ -160,8 +160,10 @@ function requestHandler (param, handleError = true) {
       }
     })
     .catch((err) => {
-      if (handleError) {
-        console.log(err)
+      if (err.response && 'success' in err.response) return err.response
+      else if (err.response && err.response.data &&
+        'success' in err.response.data) return err.response.data
+      else if (handleError) {
         apiHandleError(err, this)
       }
     })
