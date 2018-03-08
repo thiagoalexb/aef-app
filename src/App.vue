@@ -155,9 +155,11 @@ export default {
         icon: r.meta ? r.meta.icon : null,
         title: r.meta ? r.meta.title : null,
         isActive: this.$route.path === r.path,
-        show: r.meta && r.meta.title && r.meta.icon
-      })
-      )
+        show: r.meta ? r.meta.show : null
+      })).reduce((prev, curr) => {
+        if (curr.show) prev.push(curr)
+        return prev
+      }, [])
     },
     year () {
       return new Date().getFullYear()

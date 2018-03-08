@@ -24,7 +24,8 @@ export default new Router({
       component: Home,
       meta: {
         title: 'Início',
-        icon: 'dashboard'
+        icon: 'dashboard',
+        show: true
       }
     },
     {
@@ -33,7 +34,8 @@ export default new Router({
       component: Calendar,
       meta: {
         title: 'Calendário',
-        icon: 'date_range'
+        icon: 'date_range',
+        show: true
       }
     },
     {
@@ -42,7 +44,8 @@ export default new Router({
       component: Books,
       meta: {
         title: 'Livros',
-        icon: 'book'
+        icon: 'book',
+        show: true
       }
     },
     {
@@ -51,7 +54,8 @@ export default new Router({
       component: Event,
       meta: {
         title: 'Eventos',
-        icon: 'event'
+        icon: 'event',
+        show: true
       }
     },
     {
@@ -60,7 +64,8 @@ export default new Router({
       component: Post,
       meta: {
         title: 'Postagens',
-        icon: 'new_releases'
+        icon: 'new_releases',
+        show: true
       }
     },
     {
@@ -69,7 +74,8 @@ export default new Router({
       component: User,
       meta: {
         title: 'Usuários',
-        icon: 'person'
+        icon: 'person',
+        show: true
       }
     },
     {
@@ -78,7 +84,8 @@ export default new Router({
       component: UserEdit,
       props: { add: true },
       meta: {
-        title: 'Cadastro de usuário'
+        title: 'Cadastro de usuário',
+        show: false
       }
     },
     {
@@ -87,7 +94,8 @@ export default new Router({
       component: UserEdit,
       props: true,
       meta: {
-        title: 'Alteração de usuário'
+        title: 'Alteração de usuário',
+        show: false
       }
     },
     {
@@ -95,7 +103,9 @@ export default new Router({
       name: 'Login',
       component: Login,
       meta: {
-        title: 'Login'
+        title: 'Login',
+        icon: 'vpn_key',
+        show: false
       }
     },
     {
