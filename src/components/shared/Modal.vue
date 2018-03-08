@@ -6,7 +6,8 @@
       :class="openButtonClass"
       data-toggle="modal"
       :data-target="id"
-      @click="show">
+      @click="show"
+      v-if="openButton">
       {{openButtonTitle}}
       <slot name="open-button"></slot>
     </button>
@@ -20,19 +21,19 @@
               <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="modal-title" v-if="title">{{title}}</h4>
-            <slot name="title"></slot>
+            <slot name="header"></slot>
           </div>
           <div class="modal-body">
             <slot name="body"></slot>
           </div>
-          <div class="modal-footer">
+          <div :class="{'modal-footer': true, 'text-center': footerCenter}">
             <slot name="footer"></slot>
             <button
               type="button"
               class="btn btn-default"
               data-dismiss="modal"
               v-if="closeButton">
-              Fechar
+              {{closeButtonText}}
             </button>
           </div>
         </div>
@@ -42,7 +43,7 @@
 </template>
 
 <script>
-import * as $ from 'jquery'
+import $ from 'jquery'
 
 export default {
   name: 'Modal',
@@ -59,6 +60,10 @@ export default {
       type: Boolean,
       default: true
     },
+    closeButtonText: {
+      type: String,
+      default: 'Fechar'
+    },
     openButton: {
       type: Boolean,
       default: false
@@ -71,9 +76,13 @@ export default {
       type: String,
       default: 'Abrir Modal'
     },
+    footerCenter: {
+      type: Boolean,
+      default: false
+    },
     size: {
       type: String,
-      default: 'normal' // small, normal, large
+      default: 'normal' // small | sm, normal | *anything else*, large | lg
     }
   },
   created () {
@@ -82,8 +91,14 @@ export default {
       case 'small':
         this.modalClass.push('modal-sm')
         break
+      case 'sm':
+        this.modalClass.push('modal-sm')
+        break
       case 'large':
         this.modalClass.push('modal-lg')
+        break
+      case 'lg':
+        this.modalClass.push('modal-sm')
         break
     }
   },
