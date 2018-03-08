@@ -19,7 +19,7 @@
 
             <div class="row">
               <div class="col-md-12">
-                <div class="form-group label-floating">
+                <div class="form-group label-floating form-info">
                   <label class="control-label">E-mail</label>
                   <input
                     type="email"
@@ -33,7 +33,7 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <div class="form-group label-floating">
+                <div class="form-group label-floating form-info">
                   <label class="control-label">Senha</label>
                   <input
                     type="password"
