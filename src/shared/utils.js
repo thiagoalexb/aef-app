@@ -29,7 +29,10 @@ export default {
 
     if (messages || errors) {
       if (errors && errors.length) messages = errors
-      message = '<ul>'
+      message += messages.length > 1
+        ? `Ocorram alguns problemas ao ${attemptedAction}`
+        : `Ocorreu um problema ao ${attemptedAction}`
+      message += '<ul>'
       messages.forEach(m => {
         message += `<li>${m}</li>`
       })
