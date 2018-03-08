@@ -95,8 +95,7 @@ export default new Router({
       name: 'Login',
       component: Login,
       meta: {
-        title: 'Login',
-        icon: 'vpn_key'
+        title: 'Login'
       }
     },
     {
