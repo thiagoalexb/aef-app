@@ -126,6 +126,7 @@ export default {
         .catch(() => { this.saving = false })
     },
     update () {
+      this.saving = true
       this.$api.user.update(this.model)
         .then(data => {
           this.saving = false
