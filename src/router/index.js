@@ -8,7 +8,7 @@ import Event from '@/components/admin/Event'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
-import Login from '@/components/admin/Login'
+import Login from '@/components/shared/Login'
 
 Vue.use(Router)
 
