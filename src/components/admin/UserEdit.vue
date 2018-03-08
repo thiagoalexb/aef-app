@@ -14,59 +14,43 @@
           <form @submit="isAdd ? add() : update()">
             <div class="row">
               <div class="col-md-6">
-                <div class="form-group label-floating">
-                  <label class="control-label">E-mail</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    v-model="user.email"
-                    :disabled="loading || saving">
-                </div>
+                <Input
+                  label="E-mail"
+                  type="email"
+                  :disabled="loading || saving"
+                  v-model="model.email" />
               </div>
             </div>
             <div class="row">
               <div class="col-md-4">
-                <div class="form-group label-floating">
-                  <label class="control-label">Nome</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="user.firstName"
-                    :disabled="loading || saving">
-                </div>
+                <Input
+                  label="Nome"
+                  :disabled="loading || saving"
+                  v-model="model.firstName" />
               </div>
               <div class="col-md-8">
-                <div class="form-group label-floating">
-                  <label class="control-label">Sobrenome</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="user.lastName"
-                    :disabled="loading || saving">
-                </div>
+                <Input
+                  label="Sobrenome"
+                  :disabled="loading || saving"
+                  v-model="model.lastName" />
               </div>
             </div>
             <div class="row">
               <div class="col-md-8">
                 <div class="form-group label-floating">
-                  <label class="control-label">Data de Nascimento</label>
-                  <input
+                  <DateInput
+                    label="Data de nascimento"
                     type="date"
-                    class="form-control"
-                    v-model="user.dateOfBirth"
-                    :disabled="loading || saving">
+                    :disabled="loading || saving"
+                    v-model="model.dateOfBirth" />
                 </div>
               </div>
-              <div class="col-md-2"></div>
-              <div class="col-md-2">
-                <div class="form-group label-floating">
-                  <label class="control-label">E-mail confirmado</label>
-                  <input
-                    type="checkbox"
-                    class="form-control"
-                    disabled
-                    v-model="user.isVerified">
-                </div>
+              <div class="col-md-1"></div>
+              <div class="col-md-3">
+                <Checkbox
+                  label="E-mail confirmado"
+                  disabled
+                  v-model="model.isVerified" />
               </div>
             </div>
 
@@ -89,6 +73,9 @@
 </template>
 
 <script>
+import Input from '@/components/shared/Input'
+import DateInput from '@/components/shared/DateInput'
+import Checkbox from '@/components/shared/Checkbox'
 import utils from '@/shared/utils'
 
 export default {
@@ -107,18 +94,19 @@ export default {
     return {
       isAdd: false,
       loading: false,
-      saving: false
+      saving: false,
+      model: this.user
     }
   },
   created () {
     if (this.$attrs.add) this.isAdd = this.$attrs.add
-    if (this.user.id) utils.convertDateInObject(this.user)
+    if (this.model.id) utils.convertDateInObject(this.model)
     else if (this.id) {
       this.loading = true
       this.$api.user.getById({ id: this.id })
         .then(data => {
           this.loading = false
-          if (data.success) this.user = data.data
+          if (data.success) this.model = utils.convertDateInObject(data.data)
           else utils.handleApiError(data, 'buscar usuário')
         })
         .catch(() => { this.loading = false })
@@ -127,7 +115,7 @@ export default {
   methods: {
     add () {
       this.saving = true
-      this.$api.user.add(this.user)
+      this.$api.user.add(this.model)
         .then(data => {
           this.saving = false
           if (data.success) {
@@ -138,7 +126,7 @@ export default {
         .catch(() => { this.saving = false })
     },
     update () {
-      this.$api.user.update(this.user)
+      this.$api.user.update(this.model)
         .then(data => {
           this.saving = false
           if (data.success) {
@@ -148,6 +136,11 @@ export default {
         })
         .catch(() => { this.saving = false })
     }
+  },
+  components: {
+    Input,
+    Checkbox,
+    DateInput
   }
 }
 </script>
