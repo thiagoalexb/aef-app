@@ -1,5 +1,21 @@
 <template>
   <div class="col-md-12">
+    <Modal
+      id="remove-user"
+      size="sm"
+      closeButtonText="Não"
+      :footerCenter="true"
+      ref="modalRemove">
+      <h4 slot="header" class="modal-title">{{removing ? 'Removendo...' : 'Remover usuário'}}</h4>
+      <button
+        slot="footer"
+        class="btn btn-danger"
+        :disabled="removing"
+        @click="remove">
+        Sim
+      </button>
+    </Modal>
+
     <div class="card">
       <div class="card-header" data-background-color="blue">
         <router-link to="/user/add" class="pull-right">
@@ -36,7 +52,10 @@
                   class="btn">
                   <i class="material-icons">edit</i>
                 </router-link>
-                <button class="btn btn-danger">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  @click="removeId = user.id; $refs.modalRemove.show()">
                   <i class="material-icons">delete</i>
                 </button>
               </td>
@@ -63,12 +82,16 @@
 
 <script>
 import { date } from '@/shared/filters'
+import utils from '@/shared/utils'
+import Modal from '@/components/shared/Modal'
 
 export default {
   name: 'User',
   data () {
     return {
-      users: null
+      users: null,
+      removeId: null,
+      removing: false
     }
   },
   created () {
@@ -76,6 +99,24 @@ export default {
       .then(data => {
         this.users = data
       })
+  },
+  methods: {
+    remove () {
+      this.removing = true
+      this.$api.user.delete({ id: this.removeId })
+        .then(data => {
+          this.removing = false
+          if (data.success) {
+            this.users = this.users.filter(u => u.id !== this.removeId)
+            this.$notify.success('Usuário excluído com sucesso')
+            this.$refs.modalRemove.hide()
+          } else utils.handleApiError(data, 'excluir usuário')
+        })
+        .catch(() => { this.removing = false })
+    }
+  },
+  components: {
+    Modal
   },
   filters: {
     date
