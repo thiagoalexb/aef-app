@@ -1,9 +1,9 @@
 <template>
   <div class="row">
 
-    <div class="col-md-8">
+    <div class="col-md-8 col-md-offset-2">
       <div class="card">
-        <div class="card-header" data-background-color="purple">
+        <div class="card-header" data-background-color="blue">
           <h4 class="title">{{isAdd ? 'Cadastrar usuário' : 'Alterar usuário'}}</h4>
           <p class="category">Formulário de {{isAdd ? 'inclusão' : 'alteração'}} de usuário</p>
         </div>
@@ -19,16 +19,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
-                <div class="form-group label-floating">
-                  <label class="control-label">Login</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="user.username">
-                </div>
-              </div>
-            <div class="col-md-8">
+              <div class="col-md-6">
                 <div class="form-group label-floating">
                   <label class="control-label">E-mail</label>
                   <input
@@ -81,7 +72,7 @@
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary pull-right">
+            <button type="submit" class="btn btn-success pull-right">
               {{isAdd ? 'Cadastrar' : 'Atualizar' }}
             </button>
             <router-link to="/user" class="btn btn-link pull-right">Voltar</router-link>
@@ -93,32 +84,12 @@
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card card-profile">
-        <div class="card-avatar">
-          <a href="#pablo">
-            <img class="img" src="@/assets/img/aef-logo.png" style="background-color: white" />
-          </a>
-        </div>
-        <div class="content">
-          <h6 class="category text-gray">Upload de imagem de perfil</h6>
-          <h4 class="card-title">{{user.firstName}} {{user.lastName}}</h4>
-          <p class="card-content">
-            Faça o upload da imagem de perfil de usuário. Entretanto o usuário terá a opção de fazer o upload ele mesmo mais tarde.
-          </p>
-          <a href="#pablo" class="btn btn-primary btn-round">
-            <i class="material-icons">file_upload</i>
-            Upload
-          </a>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
 <script>
 import utils from '@/shared/utils'
+
 export default {
   name: 'UserEdit',
   props: {
@@ -138,21 +109,32 @@ export default {
   },
   created () {
     if (this.$attrs.add) this.isAdd = this.$attrs.add
-    utils.convertDateInObject(this.user)
+    if (this.user.id) utils.convertDateInObject(this.user)
+    else if (this.id) {
+      this.$api.user.getById({ id: this.id })
+        .then(data => {
+          if (data.success) this.user = data.data
+          else utils.handleApiError(data, 'buscar usuário')
+        })
+    }
   },
   methods: {
     add () {
       this.$api.user.add(this.user)
         .then(data => {
-          this.$notify.success('Usuário salvo com sucesso')
-          this.$router.push('/user')
+          if (data.success) {
+            this.$notify.success('Usuário salvo com sucesso')
+            this.$router.push('/user')
+          } else utils.handleApiError(data, 'salvar usuário')
         })
     },
     update () {
       this.$api.user.update(this.user)
         .then(data => {
-          this.$notify.success('Usuário salvo com sucesso')
-          this.$router.push('/user')
+          if (data.success) {
+            this.$notify.success('Usuário salvo com sucesso')
+            this.$router.push('/user')
+          } else utils.handleApiError(data, 'salvar usuário')
         })
     }
   }
