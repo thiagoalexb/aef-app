@@ -91,6 +91,7 @@
 
 <script>
 import Modal from '../shared/Modal'
+import utils from '@/shared/utils'
 
 export default {
   name: 'Books',
@@ -110,15 +111,19 @@ export default {
     add () {
       this.$api.book.add(this.newBook)
         .then(data => {
-          this.books.push(data)
-          this.$refs.addBookModal.hide()
-          this.newBook = { isSale: true }
+          if (data.success) {
+            this.books.push(data)
+            this.$refs.addBookModal.hide()
+            this.newBook = { isSale: true }
+            this.$notify.success('Livro salvo com sucesso')
+          } else utils.handleApiError(data, 'cadastrar livro')
         })
     },
     remove (id) {
       this.$api.book.delete({ id })
-        .then(res => {
-          this.books = this.books.filter(b => b.id !== id)
+        .then(data => {
+          if (data.success) this.books = this.books.filter(b => b.id !== id)
+          else utils.handleApiError(data, 'deletar livro')
         })
     }
   },
