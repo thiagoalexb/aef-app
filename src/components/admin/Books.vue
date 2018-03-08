@@ -122,8 +122,10 @@ export default {
     remove (id) {
       this.$api.book.delete({ id })
         .then(data => {
-          if (data.success) this.books = this.books.filter(b => b.id !== id)
-          else utils.handleApiError(data, 'deletar livro')
+          if (data.success) {
+            this.books = this.books.filter(b => b.id !== id)
+            this.$notify.success('Livro deletado com sucesso')
+          } else utils.handleApiError(data, 'deletar livro')
         })
     }
   },
