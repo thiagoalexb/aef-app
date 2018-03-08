@@ -6,18 +6,12 @@
         <div class="card-header" data-background-color="blue">
           <h4 class="title">{{isAdd ? 'Cadastrar usuário' : 'Alterar usuário'}}</h4>
           <p class="category">Formulário de {{isAdd ? 'inclusão' : 'alteração'}} de usuário</p>
+          <b v-show="loading">Carregando...</b>
+          <b v-show="saving">Salvando...</b>
         </div>
 
         <div class="card-content">
           <form @submit="isAdd ? add() : update()">
-            <div class="row" v-if="user.id">
-              <div class="col-md-12">
-                <div class="form-group label-floating">
-                  <label class="control-label">Id</label>
-                  <span>{{user.id}}</span>
-                </div>
-              </div>
-            </div>
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group label-floating">
@@ -25,7 +19,8 @@
                   <input
                     type="email"
                     class="form-control"
-                    v-model="user.email">
+                    v-model="user.email"
+                    :disabled="loading || saving">
                 </div>
               </div>
             </div>
@@ -36,7 +31,8 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="user.firstName">
+                    v-model="user.firstName"
+                    :disabled="loading || saving">
                 </div>
               </div>
               <div class="col-md-8">
@@ -45,7 +41,8 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="user.lastName">
+                    v-model="user.lastName"
+                    :disabled="loading || saving">
                 </div>
               </div>
             </div>
@@ -56,7 +53,8 @@
                   <input
                     type="date"
                     class="form-control"
-                    v-model="user.dateOfBirth">
+                    v-model="user.dateOfBirth"
+                    :disabled="loading || saving">
                 </div>
               </div>
               <div class="col-md-2"></div>
@@ -72,7 +70,10 @@
               </div>
             </div>
 
-            <button type="submit" class="btn btn-success pull-right">
+            <button
+              type="submit"
+              class="btn btn-success pull-right"
+              :disabled="loading || saving">
               {{isAdd ? 'Cadastrar' : 'Atualizar' }}
             </button>
             <router-link to="/user" class="btn btn-link pull-right">Voltar</router-link>
@@ -104,38 +105,48 @@ export default {
   },
   data () {
     return {
-      isAdd: false
+      isAdd: false,
+      loading: false,
+      saving: false
     }
   },
   created () {
     if (this.$attrs.add) this.isAdd = this.$attrs.add
     if (this.user.id) utils.convertDateInObject(this.user)
     else if (this.id) {
+      this.loading = true
       this.$api.user.getById({ id: this.id })
         .then(data => {
+          this.loading = false
           if (data.success) this.user = data.data
           else utils.handleApiError(data, 'buscar usuário')
         })
+        .catch(() => { this.loading = false })
     }
   },
   methods: {
     add () {
+      this.saving = true
       this.$api.user.add(this.user)
         .then(data => {
+          this.saving = false
           if (data.success) {
             this.$notify.success('Usuário salvo com sucesso')
             this.$router.push('/user')
           } else utils.handleApiError(data, 'salvar usuário')
         })
+        .catch(() => { this.saving = false })
     },
     update () {
       this.$api.user.update(this.user)
         .then(data => {
+          this.saving = false
           if (data.success) {
             this.$notify.success('Usuário salvo com sucesso')
             this.$router.push('/user')
           } else utils.handleApiError(data, 'salvar usuário')
         })
+        .catch(() => { this.saving = false })
     }
   }
 }
