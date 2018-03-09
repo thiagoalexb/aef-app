@@ -28,9 +28,10 @@ export default {
       type: Boolean,
       default: false
     },
-    checked: Object,
+    checked: {
+      required: true
+    },
     value: {
-      type: Object,
       required: true
     }
   },
