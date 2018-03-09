@@ -3,11 +3,9 @@
     <label>
       <input
         type="checkbox"
-        :name="name"
-        :checked="checked"
-        @change="$emit('change', $event.target.value)"
         :value="value"
-        :disabled="disabled">
+        :disabled="disabled"
+        @change="changed">
       {{label}}
     </label>
   </div>
@@ -28,12 +26,22 @@ export default {
       type: Boolean,
       default: false
     },
-    checked: Boolean,
+    checked: [ Boolean, Array ],
     value: {
       type: String,
       default: ''
-    },
-    name: String
+    }
+  },
+  methods: {
+    changed (event) {
+      if (Array.isArray(this.checked)) {
+        event.target.checked
+          ? this.$emit('change', this.checked.concat([ this.value ]))
+          : this.$emit('change', this.checked.filter(c => c !== this.value))
+      } else {
+        this.$emit('change', event.target.checked)
+      }
+    }
   }
 }
 </script>

@@ -3,17 +3,17 @@
     <label>
       <input
         type="radio"
-        :name="name"
-        :checked="checked"
-        @change="$emit('change', $event.target.value)"
         :value="value"
-        :disabled="disabled">
+        :disabled="disabled"
+        :checked="checked === value"
+        @change="changed">
       {{label}}
     </label>
   </div>
 </template>
 
 <script>
+
 export default {
   model: {
     prop: 'checked',
@@ -28,12 +28,17 @@ export default {
       type: Boolean,
       default: false
     },
-    checked: Boolean,
+    checked: Object,
     value: {
-      type: String,
-      default: ''
-    },
-    name: String
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    changed (event) {
+      this.$emit('change', event.target.value)
+    }
   }
 }
+
 </script>
