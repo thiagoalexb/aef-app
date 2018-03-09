@@ -6790,3 +6790,14 @@ footer .btn {
 .has-warning .form-control-feedback {
   color: #ff9800;
 }
+/*changed checkbox color*/
+.checkbox input[type=checkbox]:checked+.checkbox-material .check {
+  background-color: #00bcd4;
+}
+/*changed radio color*/
+.radio input[type=radio]:checked~.check {
+  background-color: #00bcd4;
+}
+.radio input[type=radio]:checked~.circle {
+  border-color: #00bcd4;
+}
