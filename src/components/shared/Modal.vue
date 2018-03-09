@@ -30,7 +30,7 @@
             <slot name="footer"></slot>
             <button
               type="button"
-              class="btn btn-default"
+              :class="closeButtonClass"
               data-dismiss="modal"
               v-if="closeButton">
               {{closeButtonText}}
@@ -63,6 +63,10 @@ export default {
     closeButtonText: {
       type: String,
       default: 'Fechar'
+    },
+    closeButtonClass: {
+      type: [String, Object, Array],
+      default: () => 'btn btn-default'
     },
     openButton: {
       type: Boolean,
