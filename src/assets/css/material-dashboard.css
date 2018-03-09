@@ -2828,7 +2828,8 @@ fieldset[disabled] .form-group .form-control {
 
 .form-group .help-block {
     position: absolute;
-    display: none;
+    /*commented to show help-block messages*/
+    /*display: none;*/
 }
 
 .form-group.is-focused .form-control {
@@ -3246,9 +3247,10 @@ select.form-control[multiple],
     z-index: 100;
 }
 
-.form-control-feedback {
+/*commented to show form-control-feedback icons*/
+/*.form-control-feedback {
     opacity: 0;
-}
+}*/
 
 .has-success .form-control-feedback {
     color: #4caf50;
@@ -6778,4 +6780,13 @@ footer .btn {
     .table-responsive {
         overflow: visible;
     }
+}
+
+/*incremented has-info color into feedback icon*/
+.has-info .form-control-feedback {
+  color: #00bcd4;
+}
+/*changed has-warning ugly color for feedback icon*/
+.has-warning .form-control-feedback {
+  color: #ff9800;
 }
