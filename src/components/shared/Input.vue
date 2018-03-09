@@ -1,5 +1,5 @@
 <template lang="html">
-  <div ref="container" class="form-group form-info label-floating">
+  <div ref="container" :class="containerClasses">
     <label class="control-label">{{label}}</label>
     <input
       :type="type"
@@ -7,6 +7,10 @@
       :value="value"
       @input="$emit('input', $event.target.value)"
       :disabled="disabled">
+    <span v-show="stateFeedbackIcon" class="form-control-feedback">
+      <i class="material-icons">{{stateFeedbackIcon}}</i>
+    </span>
+    <span v-show="message" class="help-block">{{message}}</span>
   </div>
 </template>
 
@@ -28,11 +32,52 @@ export default {
     value: {
       type: String,
       default: undefined
+    },
+    state: {
+      type: String,
+      validator: (value) => [ 'error', 'success', 'info', 'warning' ].includes(value)
+    },
+    // material-icons
+    // set null to not show icon
+    stateFeedback: {
+      type: String,
+      default: undefined
+    },
+    message: {
+      type: String
     }
   },
   data () {
     return {
       unwatch: null
+    }
+  },
+  computed: {
+    stateFeedbackIcon () {
+      if (this.stateFeedback || this.stateFeedback === null) return this.stateFeedback
+
+      switch (this.state) {
+        case 'error':
+          return 'clear'
+        case 'success':
+          return 'done'
+        case 'info':
+          return 'info_outline'
+        case 'warning':
+          return 'warning'
+        default:
+          return null
+      }
+    },
+    containerClasses () {
+      const classes = [
+        'form-group',
+        'form-info',
+        'label-floating'
+      ]
+
+      if (this.state) classes.push(`has-${this.state}`)
+      return classes
     }
   },
   created () {
