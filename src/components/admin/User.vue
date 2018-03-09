@@ -4,12 +4,17 @@
       id="remove-user"
       size="sm"
       closeButtonText="Não"
+      closeButtonClass="btn btn-default btn-simple"
       :footerCenter="true"
       ref="modalRemove">
       <h4 slot="header" class="modal-title">{{removing ? 'Removendo...' : 'Remover usuário'}}</h4>
+      <p slot="body">
+        Deseja realmente remover o usuário
+        {{userRemove ? `${userRemove.firstName} ${userRemove.lastName}` : null}}?
+      </p>
       <button
         slot="footer"
-        class="btn btn-danger"
+        class="btn btn-danger btn-simple"
         :disabled="removing"
         @click="remove">
         Sim
@@ -49,13 +54,13 @@
               <td>
                 <router-link
                   :to="{ name: 'UserEdit', params: { id: user.id, user: user } }"
-                  class="btn">
+                  class="btn btn-simple">
                   <i class="material-icons">edit</i>
                 </router-link>
                 <button
                   type="button"
-                  class="btn btn-danger"
-                  @click="removeId = user.id; $refs.modalRemove.show()">
+                  class="btn btn-danger btn-simple"
+                  @click="userRemove = user; $refs.modalRemove.show()">
                   <i class="material-icons">delete</i>
                 </button>
               </td>
@@ -90,7 +95,7 @@ export default {
   data () {
     return {
       users: null,
-      removeId: null,
+      userRemove: null,
       removing: false
     }
   },
@@ -103,11 +108,11 @@ export default {
   methods: {
     remove () {
       this.removing = true
-      this.$api.user.delete({ id: this.removeId })
+      this.$api.user.delete({ id: this.userRemove.id })
         .then(data => {
           this.removing = false
           if (data.success) {
-            this.users = this.users.filter(u => u.id !== this.removeId)
+            this.users = this.users.filter(u => u.id !== this.userRemove.id)
             this.$notify.success('Usuário excluído com sucesso')
             this.$refs.modalRemove.hide()
           } else utils.handleApiError(data, 'excluir usuário')
