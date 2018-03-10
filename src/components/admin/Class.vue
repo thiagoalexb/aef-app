@@ -1,14 +1,11 @@
 <template>
   <div>
-    <h1>Eventos</h1>
+    <h1>Aulas</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Event'
+  name: 'Class'
 }
 </script>
-
-<style scoped>
-</style>

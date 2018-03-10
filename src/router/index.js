@@ -4,11 +4,11 @@ import Router from 'vue-router'
 import Home from '@/components/admin/Home'
 import Calendar from '@/components/admin/Calendar'
 import Books from '@/components/admin/Books'
-import Event from '@/components/admin/Event'
+import Class from '@/components/admin/Class'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
-import Login from '@/components/shared/Login'
+import Login from '@/components/admin/Login'
 
 Vue.use(Router)
 
@@ -50,11 +50,11 @@ export default new Router({
     },
     {
       path: '/event',
-      name: 'Event',
-      component: Event,
+      name: 'Class',
+      component: Class,
       meta: {
-        title: 'Eventos',
-        icon: 'event',
+        title: 'Aulas',
+        icon: 'class',
         show: true
       }
     },
