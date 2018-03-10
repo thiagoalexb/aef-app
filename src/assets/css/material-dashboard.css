@@ -6801,3 +6801,11 @@ footer .btn {
 .radio input[type=radio]:checked~.circle {
   border-color: #00bcd4;
 }
+/*undo alert color*/
+.alert.alert-undo {
+  background-color: #323232;
+  color: white;
+}
+.alert.alert-undo .btn {
+  margin: 0 !important;
+}

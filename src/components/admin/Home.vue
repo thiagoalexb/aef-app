@@ -44,6 +44,12 @@
       @click="$notify.info('novo <i>uso!</i> :B')">
       novo uso 2
     </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      @click="showUndo">
+      undo
+    </button>
   </div>
 </template>
 
@@ -69,6 +75,9 @@ export default {
     },
     novo () {
       this.$notify.success('novo <b>uso!</b> :)')
+    },
+    showUndo () {
+      this.$notify.undo('Undo this', () => { alert('undo this called') })
     }
   }
 }
