@@ -8,7 +8,7 @@ import Class from '@/components/admin/Class'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
-import UserChangePassword from '@/components/admin/UserChangePassword'
+import UserPasswordChange from '@/components/admin/UserPasswordChange'
 import Login from '@/components/admin/Login'
 
 Vue.use(Router)
@@ -102,7 +102,7 @@ export default new Router({
     {
       path: '/usuario/ativar-conta/:email',
       name: 'userActivateAccount',
-      component: UserChangePassword,
+      component: UserPasswordChange,
       props: true,
       meta: {
         title: 'Ativar conta',
@@ -112,7 +112,7 @@ export default new Router({
     {
       path: '/usuario/recuperar-senha/:email/:recoverPasswordToken',
       name: 'userPasswordRecover',
-      component: UserChangePassword,
+      component: UserPasswordChange,
       props: true,
       meta: {
         title: 'Recuperar senha',

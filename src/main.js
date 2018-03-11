@@ -36,12 +36,18 @@ Vue.prototype.$store = store
 const initialTitle = document.title
 
 router.beforeEach((to, from, next) => {
-  // send to login page if necessary
-  store.user = getUser()
-  if ((!store.user || !store.user.accessToken) && to.name !== 'Login') next('/login')
   // change page title when component router is changed
   document.title = `${initialTitle} - ${to.meta.title}`
-  next()
+
+  store.user = getUser()
+
+  // login not needed routes
+  if (to.name === 'userActivateAccount' ||
+    to.name === 'userPasswordRecover') next()
+  // send to login if necessary
+  else if ((!store.user || !store.user.accessToken) &&
+    to.name !== 'login') next('/login')
+  else next()
 })
 
 /* eslint-disable no-new */

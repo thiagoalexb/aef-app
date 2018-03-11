@@ -60,7 +60,7 @@
               :disabled="loading || saving">
               {{isAdd ? 'Cadastrar' : 'Atualizar' }}
             </button>
-            <router-link to="/user" class="btn btn-link pull-right">Voltar</router-link>
+            <router-link :to="{ name: 'user' }" class="btn btn-link pull-right">Voltar</router-link>
 
             <div class="clearfix"></div>
           </form>

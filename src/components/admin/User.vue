@@ -40,7 +40,7 @@
                 <button
                   type="button"
                   class="btn btn-danger btn-simple"
-                  @click="remove(user.id)">
+                  @click="remove(user)">
                   <i class="material-icons">delete</i>
                 </button>
               </td>

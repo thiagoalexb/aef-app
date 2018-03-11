@@ -96,6 +96,8 @@ for (let route of apiCommonRoutes) {
 // mount uncommon routes
 apiRoutes.push('get user/verify-password')
 apiRoutes.push('post user/update-password')
+apiRoutes.push('get user/recover-password')
+apiRoutes.push('get user/verify-password-token')
 apiRoutes.push('post login/login')
 
 function routeExtractDetails (route) {

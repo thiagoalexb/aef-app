@@ -152,7 +152,7 @@ export default {
           this.logging = false
           if (data && data.authenticated) {
             // set user info
-            data.user.email = this.user.email
+            data.user.email = this.email
 
             authentication.setUser(data)
             this.$store.user = authentication.getUser()
