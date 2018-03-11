@@ -1,29 +1,9 @@
 <template>
   <div class="col-md-12">
-    <Modal
-      id="remove-user"
-      size="sm"
-      closeButtonText="Não"
-      closeButtonClass="btn btn-default btn-simple"
-      :footerCenter="true"
-      ref="modalRemove">
-      <h4 slot="header" class="modal-title">{{removing ? 'Removendo...' : 'Remover usuário'}}</h4>
-      <p slot="body">
-        Deseja realmente remover o usuário
-        {{userRemove ? `${userRemove.firstName} ${userRemove.lastName}` : null}}?
-      </p>
-      <button
-        slot="footer"
-        class="btn btn-danger btn-simple"
-        :disabled="removing"
-        @click="remove">
-        Sim
-      </button>
-    </Modal>
 
     <div class="card">
       <div class="card-header" data-background-color="blue">
-        <router-link to="/user/add" class="pull-right">
+        <router-link :to="{ name: 'userAdd' }" class="pull-right">
           <i class="material-icons">add</i>
         </router-link>
 
@@ -53,14 +33,14 @@
               <td>{{user.dateOfBirth | date}}</td>
               <td>
                 <router-link
-                  :to="{ name: 'UserEdit', params: { id: user.id, user: user } }"
+                  :to="{ name: 'userEdit', params: { id: user.id, user: user } }"
                   class="btn btn-simple">
                   <i class="material-icons">edit</i>
                 </router-link>
                 <button
                   type="button"
                   class="btn btn-danger btn-simple"
-                  @click="userRemove = user; $refs.modalRemove.show()">
+                  @click="remove(user.id)">
                   <i class="material-icons">delete</i>
                 </button>
               </td>
@@ -88,7 +68,6 @@
 <script>
 import { date } from '@/shared/filters'
 import utils from '@/shared/utils'
-import Modal from '@/components/shared/Modal'
 
 export default {
   name: 'User',
@@ -106,28 +85,27 @@ export default {
       })
   },
   methods: {
-    remove () {
+    remove (user) {
       this.removing = true
-      this.$api.user.delete({ id: this.userRemove.id })
+      this.$notify.info(`Excluindo ${user.firstName} ${user.lastName}...`)
+      this.$api.user.delete({ id: user.id })
         .then(data => {
           this.removing = false
           if (data.success) {
             this.users = this.users.filter(u => u.id !== this.userRemove.id)
             this.$notify.success('Usuário excluído com sucesso')
-            this.$refs.modalRemove.hide()
+            this.$notify.undo('Usuário excluido!', this.restore)
           } else utils.handleApiError(data, 'excluir usuário')
         })
         .catch(() => { this.removing = false })
+    },
+    restore (id) {
+      // this.$api.user.update({ id, deleted: false })
+      alert('Deveria restaurar o cara ' + id)
     }
-  },
-  components: {
-    Modal
   },
   filters: {
     date
   }
 }
 </script>
-
-<style scoped>
-</style>

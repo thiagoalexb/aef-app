@@ -99,7 +99,7 @@ export default {
                   data.id = userVerified.data.userId
                   authentication.setUser(data)
                   this.$store.user = authentication.getUser()
-                  this.$router.push({ name: 'Home' })
+                  this.$router.push({ name: 'home' })
                 } else {
                   this.error(data)
                 }

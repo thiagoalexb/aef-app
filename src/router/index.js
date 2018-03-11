@@ -3,11 +3,12 @@ import Router from 'vue-router'
 
 import Home from '@/components/admin/Home'
 import Calendar from '@/components/admin/Calendar'
-import Books from '@/components/admin/Books'
+import Book from '@/components/admin/Book'
 import Class from '@/components/admin/Class'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
+import UserChangePassword from '@/components/admin/UserChangePassword'
 import Login from '@/components/admin/Login'
 
 Vue.use(Router)
@@ -20,7 +21,7 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: Home,
       meta: {
         title: 'Início',
@@ -29,8 +30,8 @@ export default new Router({
       }
     },
     {
-      path: '/calendar',
-      name: 'Calendar',
+      path: '/calendario',
+      name: 'calendar',
       component: Calendar,
       meta: {
         title: 'Calendário',
@@ -39,9 +40,9 @@ export default new Router({
       }
     },
     {
-      path: '/books',
-      name: 'Books',
-      component: Books,
+      path: '/livro',
+      name: 'book',
+      component: Book,
       meta: {
         title: 'Livros',
         icon: 'book',
@@ -49,8 +50,8 @@ export default new Router({
       }
     },
     {
-      path: '/event',
-      name: 'Class',
+      path: '/aula',
+      name: 'class',
       component: Class,
       meta: {
         title: 'Aulas',
@@ -60,7 +61,7 @@ export default new Router({
     },
     {
       path: '/post',
-      name: 'Post',
+      name: 'post',
       component: Post,
       meta: {
         title: 'Postagens',
@@ -69,8 +70,8 @@ export default new Router({
       }
     },
     {
-      path: '/user',
-      name: 'User',
+      path: '/usuario',
+      name: 'user',
       component: User,
       meta: {
         title: 'Usuários',
@@ -79,28 +80,48 @@ export default new Router({
       }
     },
     {
-      path: '/user/add',
-      name: 'UserAdd',
+      path: '/usuario/adicionar',
+      name: 'userAdd',
       component: UserEdit,
       props: { add: true },
       meta: {
-        title: 'Cadastro de usuário',
+        title: 'Adicionar usuário',
         show: false
       }
     },
     {
-      path: '/user/edit/:id',
-      name: 'UserEdit',
+      path: '/usuario/atualizar/:id',
+      name: 'userEdit',
       component: UserEdit,
       props: true,
       meta: {
-        title: 'Alteração de usuário',
+        title: 'Atualização de usuário',
+        show: false
+      }
+    },
+    {
+      path: '/usuario/ativar-conta/:email',
+      name: 'userActivateAccount',
+      component: UserChangePassword,
+      props: true,
+      meta: {
+        title: 'Ativar conta',
+        show: false
+      }
+    },
+    {
+      path: '/usuario/recuperar-senha/:email/:recoverPasswordToken',
+      name: 'userPasswordRecover',
+      component: UserChangePassword,
+      props: true,
+      meta: {
+        title: 'Recuperar senha',
         show: false
       }
     },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: Login,
       meta: {
         title: 'Login',
@@ -110,7 +131,7 @@ export default new Router({
     },
     {
       path: '/logoff',
-      name: 'Logoff',
+      name: 'logoff',
       component: Login
     }
   ]

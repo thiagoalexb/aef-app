@@ -165,7 +165,8 @@ export default {
       return new Date().getFullYear()
     },
     isLogin () {
-      return this.$route.name === 'Login'
+      return this.$route.name === 'login' ||
+        this.$route.name === 'userActivateAccount'
     }
   },
   methods: {

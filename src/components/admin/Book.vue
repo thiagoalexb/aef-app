@@ -94,7 +94,7 @@ import Modal from '../shared/Modal'
 import utils from '@/shared/utils'
 
 export default {
-  name: 'Books',
+  name: 'Book',
   data () {
     return {
       books: null,
@@ -140,6 +140,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

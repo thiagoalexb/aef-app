@@ -11,7 +11,7 @@
         </div>
 
         <div class="card-content">
-          <form @submit="isAdd ? add() : update()">
+          <form @submit.prevent="isAdd ? add() : update()">
             <div class="row">
               <div class="col-md-6">
                 <Input
