@@ -79,6 +79,10 @@ const apiCommonSubRoutes = [
   {
     path: 'delete',
     verb: 'delete'
+  },
+  {
+    path: 'restore',
+    verb: 'patch'
   }
 ]
 
