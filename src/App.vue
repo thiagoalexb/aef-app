@@ -61,7 +61,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <router-link :to="{ name: 'UserEdit', params: { id: this.$store.user.id }}">
+                    <router-link :to="{ name: 'userEdit', params: { id: userId }}">
                       Visualizar perfil
                     </router-link>
                   </li>
@@ -165,9 +165,11 @@ export default {
       return new Date().getFullYear()
     },
     isLogin () {
-      return this.$route.name === 'login' ||
-        this.$route.name === 'userActivateAccount'
-    }
+      return this.$store.loginFreeRoutes.includes(this.$route.name)
+    },
+    userId: () => this.$store && this.$store.user
+      ? this.$store.user.id
+      : null
   },
   methods: {
     sidebarItemClasses (isActive, index) {

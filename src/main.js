@@ -24,7 +24,14 @@ import './assets/js/arrive.min'
 
 // simple store for logged user
 const store = {
-  user: getUser()
+  user: getUser(),
+  // login not needed routes
+  loginFreeRoutes: [
+    'login',
+    'userActivateAccount',
+    'userPasswordRecover',
+    'forgotPassword'
+  ]
 }
 
 Vue.config.productionTip = false
@@ -42,8 +49,7 @@ router.beforeEach((to, from, next) => {
   store.user = getUser()
 
   // login not needed routes
-  if (to.name === 'userActivateAccount' ||
-    to.name === 'userPasswordRecover') next()
+  if (store.loginFreeRoutes.includes(to.name)) next()
   // send to login if necessary
   else if ((!store.user || !store.user.accessToken) &&
     to.name !== 'login') next('/login')
