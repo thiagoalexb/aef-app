@@ -21,8 +21,8 @@
                     v-model="password"
                     label="Nova senha"
                     :disabled="loading"
-                    :state="state.password.state"
-                    :message="state.password.message"
+                    :state="passwordState.state"
+                    :message="passwordState.message"
                     @input="passwordChanged" />
               </div>
             </div>
@@ -33,8 +33,8 @@
                     v-model="confirmPassword"
                     label="Confirme a senha"
                     :disabled="loading"
-                    :state="state.password.state"
-                    :message="state.password.message"
+                    :state="passwordState.state"
+                    :message="passwordState.message"
                     @input="passwordChanged" />
               </div>
             </div>
@@ -43,7 +43,7 @@
 
             <button
               type="submit"
-              :disabled="loading || !state.password.valid || !password || !confirmPassword"
+              :disabled="loading || !passwordState.valid || !password || !confirmPassword"
               class="pull-right btn btn-success">
               <i class="material-icons" style="margin-right: 5px">check</i>Salvar
             </button>
@@ -83,62 +83,60 @@ export default {
       id: null,
       password: null,
       confirmPassword: null,
+      submited: false,
       loading: true,
       logging: false,
-      state: {
-        password: {
-          valid: false,
-          state: null,
-          message: null
-        }
-      }
     }
   },
   created () {
+    // initial verifications for activate account
+    // and recover password screens
     if (this.$route.name === 'userActivateAccount') {
       this.title = 'Ativação de conta'
+
+      // verify if account is already activated
+      this.$api.user.verifyPassword({ email: this.email })
+        .then(data => {
+          this.loading = false
+          if (data.success) {
+            if (!data.data.isVerified) {
+              // account not verified, ok set password
+              this.id = data.data.userId
+            } else if (data.data.isVerified) {
+              // account verified, send to login
+              this.$notify.warning('Sua conta já está ativa, faça o login.')
+              this.$router.push({ name: 'login' })
+            }
+          } else utils.handleApiError(data, 'verificar sua conta')
+        })
+        .catch(() => { this.loading = false })
     } else {
       this.title = 'Recuperação de senha'
-    }
 
-    this.$api.user.verifyPassword({ email: this.email })
-      .then(data => {
-        this.loading = false
-        if (data.success) {
-          if (!data.data.isVerified) {
-            // account not verified, ok set password
-            this.id = data.data.userId
-          } else if (data.data.isVerified && this.$route.name === 'userActivateAccount') {
-            // account verified, send to login
-            this.$notify.warning('Sua conta já está ativa, faça o login.')
-            this.$router.push({ name: 'login' })
-          }
-        } else utils.handleApiError(data, 'verificar sua conta')
+      // verify email and password recover token
+      this.$api.verifyPasswordToken({
+        email: this.email,
+        token: this.recoverPasswordToken
       })
-      .catch(() => { this.loading = false })
+        .then(data => {
+          // invalid token / email, return to login
+          if (!data.success) this.$router.push('/login')
+        })
+    }
   },
   methods: {
-    passwordChanged () {
-      if (!this.password || !this.confirmPassword) {
-        this.state.password.valid = false
-        this.state.password.state = null
-        this.state.password.message = null
-      } else if (this.password !== this.confirmPassword) {
-        this.state.password.valid = false
-        this.state.password.state = 'error'
-        this.state.password.message = 'A senha digitada não confere'
-      } else {
-        this.state.password.valid = true
-        this.state.password.state = 'success'
-        this.state.password.message = null
-      }
-    },
     updatePassword () {
-      this.$api.user.updatePassword({
+      this.submited = true
+      const formData = {
         id: this.id,
         password: this.password,
         confirmPassword: this.confirmPassword
-      })
+      }
+      if (this.$route.name === 'userPasswordRecover') {
+        formData.token = this.recoverPasswordToken
+      }
+
+      this.$api.user.updatePassword(formData)
         .then(data => {
           if (data.success) {
             this.login()
@@ -159,6 +157,36 @@ export default {
             this.$router.push({ name: 'home' })
           } else utils.handleApiError(data, 'efetuando login com nova senha')
         })
+    }
+  },
+  computed: {
+    passwordState () {
+      const state = {
+        valid: false,
+        state: null,
+        message: null
+      }
+
+      state.valid = this.password &&
+        this.confirmPassword &&
+        this.password === this.confirmPassword
+
+      if (this.submited) {
+        if (!this.password || !this.confirmPassword) {
+          state.valid = false
+          return state
+        } else if (this.password !== this.confirmPassword) {
+          state.valid = false
+          state.state = 'error'
+          state.message = 'A senha digitada não confere'
+        } else {
+          state.valid = true
+          state.state = 'success'
+          state.message = null
+        }
+      }
+
+      return state
     }
   },
   components: {
