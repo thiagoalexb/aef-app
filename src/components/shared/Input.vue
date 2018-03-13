@@ -2,11 +2,13 @@
   <div ref="container" :class="containerClasses">
     <label class="control-label">{{label}}</label>
     <input
+      ref="input"
       :type="type"
       class="form-control"
       :value="value"
       @input="$emit('input', $event.target.value)"
-      :disabled="disabled">
+      :disabled="disabled"
+      :autofocus="autofocus">
     <span v-show="stateFeedbackIcon" class="form-control-feedback">
       <i class="material-icons">{{stateFeedbackIcon}}</i>
     </span>
@@ -45,6 +47,9 @@ export default {
     },
     message: {
       type: String
+    },
+    autofocus: {
+      type: Boolean
     }
   },
   data () {
@@ -78,6 +83,11 @@ export default {
 
       if (this.state) classes.push(`has-${this.state}`)
       return classes
+    }
+  },
+  methods: {
+    focus () {
+      this.$refs.input.focus()
     }
   },
   created () {

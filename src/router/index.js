@@ -10,6 +10,8 @@ import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
 import UserPasswordChange from '@/components/admin/UserPasswordChange'
 import Login from '@/components/admin/Login'
+import LoginHome from '@/components/admin/LoginHome'
+import LoginForgotPassword from '@/components/admin/LoginForgotPassword'
 
 Vue.use(Router)
 
@@ -121,13 +123,34 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'login',
       component: Login,
       meta: {
         title: 'Login',
         icon: 'vpn_key',
         show: false
-      }
+      },
+      children: [
+        {
+          path: '',
+          name: 'login',
+          component: LoginHome,
+          meta: {
+            title: 'Login',
+            subTitle: 'Informe seu login para acessar o sistema',
+            show: false
+          }
+        },
+        {
+          path: '/esqueci-minha-senha',
+          name: 'forgotPassword',
+          component: LoginForgotPassword,
+          meta: {
+            title: 'Esqueci a senha',
+            subTitle: 'Informe seu e-mail para receber mais instruções de alteração de senha',
+            show: false
+          }
+        }
+      ]
     },
     {
       path: '/logoff',
