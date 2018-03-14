@@ -85,7 +85,7 @@ export default {
       confirmPassword: null,
       submited: false,
       loading: true,
-      logging: false,
+      logging: false
     }
   },
   created () {
