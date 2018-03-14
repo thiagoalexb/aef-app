@@ -74,7 +74,6 @@ export default {
   data () {
     return {
       users: null,
-      userRemove: null,
       removing: false
     }
   },
@@ -92,16 +91,22 @@ export default {
         .then(data => {
           this.removing = false
           if (data.success) {
-            this.users = this.users.filter(u => u.id !== this.userRemove.id)
+            this.users = this.users.filter(u => u.id !== user.id)
             this.$notify.success('Usuário excluído com sucesso')
-            this.$notify.undo('Usuário excluido!', this.restore)
+            this.$notify.undo('Usuário excluido!', this.restore.bind(this, user))
           } else utils.handleApiError(data, 'excluir usuário')
         })
         .catch(() => { this.removing = false })
     },
-    restore (id) {
-      // this.$api.user.update({ id, deleted: false })
-      alert('Deveria restaurar o cara ' + id)
+    restore (user) {
+      this.$notify.info('Restaurando usuário...')
+      this.$api.user.restore({ id: user.id })
+        .then(data => {
+          if (data.success) {
+            this.users.push(user)
+            this.$notify.success('Usuário restaurado com sucesso!')
+          } else utils.handleApiError(data, 'restaurar usuário')
+        })
     }
   },
   filters: {
