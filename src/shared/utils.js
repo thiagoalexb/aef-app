@@ -29,6 +29,8 @@ export default {
 
     if (messages || errors) {
       if (errors && errors.length) messages = errors
+      else if (errors && typeof errors === 'object' && errors.defaultError) messages = [errors.defaultError]
+      else return // submited validation object error, need to be threat
       message = messages.length > 1
         ? `Ocorreram alguns problemas ao ${attemptedAction}:`
         : `Ocorreu um problema ao ${attemptedAction}:`
