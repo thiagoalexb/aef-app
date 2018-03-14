@@ -109,6 +109,12 @@ export default {
         })
     }
   },
+  beforeRouteLeave (to, from, next) {
+    if (this.users === null) { // loading
+      this.$api.cancel.user.getAll()
+    }
+    next()
+  },
   filters: {
     date
   }
