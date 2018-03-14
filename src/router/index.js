@@ -5,6 +5,7 @@ import Home from '@/components/admin/Home'
 import Calendar from '@/components/admin/Calendar'
 import Book from '@/components/admin/Book'
 import Class from '@/components/admin/Class'
+import ClassEdit from '@/components/admin/ClassEdit'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
@@ -59,6 +60,26 @@ export default new Router({
         title: 'Aulas',
         icon: 'class',
         show: true
+      }
+    },
+    {
+      path: '/aula/adicionar',
+      name: 'classAdd',
+      component: ClassEdit,
+      props: true,
+      meta: {
+        title: 'Adicionar Aula',
+        show: false
+      }
+    },
+    {
+      path: '/aula/atualizar',
+      name: 'classEdit',
+      component: ClassEdit,
+      props: true,
+      meta: {
+        title: 'Atualizar Aula',
+        show: false
       }
     },
     {
