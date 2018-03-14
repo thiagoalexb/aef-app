@@ -28,7 +28,7 @@
               :title="user.isVerified ? null : 'Email ainda não verificado!'"
               :class="{'danger': !user.isVerified}"
               v-show="users && users.length">
-              <td>{{`${user.firstName} ${user.lastName}`}}</td>
+              <td>{{user | userName}}</td>
               <td>{{user.email}}</td>
               <td>{{user.dateOfBirth | date}}</td>
               <td>
@@ -116,7 +116,8 @@ export default {
     next()
   },
   filters: {
-    date
+    date,
+    userName: user => `${user.firstName} ${user.lastName}`
   }
 }
 </script>
