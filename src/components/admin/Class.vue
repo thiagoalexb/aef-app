@@ -111,6 +111,12 @@ export default {
         })
     }
   },
+  beforeRouteLeave (to, from, next) {
+    if (this.classes === null) { // loading
+      this.$api.cancel.lesson.getAll()
+    }
+    next()
+  },
   filters: {
     formatClass (model) {
       return `${model.code} - ${model.title}${model.subTitle ? ' - ' : ''}${model.subTitle}`
