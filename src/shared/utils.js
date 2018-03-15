@@ -1,4 +1,5 @@
 import notify from './notify'
+import { fromObject } from './changeCase'
 
 export default {
   convertDateInObject (obj) {
@@ -30,7 +31,7 @@ export default {
     if (messages || errors) {
       if (errors && errors.length) messages = errors
       else if (errors && typeof errors === 'object' && errors.defaultError) messages = [errors.defaultError]
-      else return // submited validation object error, need to be threat
+      else if (errors && typeof errors === 'object') return fromObject(errors)// submited validation object error, need to be threat
       message = messages.length > 1
         ? `Ocorreram alguns problemas ao ${attemptedAction}:`
         : `Ocorreu um problema ao ${attemptedAction}:`
@@ -39,9 +40,12 @@ export default {
         message += `<li>${m}</li>`
       })
       message += '</ul>'
+
+      if (errors.defaultError && Object.keys(errors).length > 1) return fromObject(errors)
     } else if (error) message = error
     else if (!message) message = `Ocorreu um problema ao ${attemptedAction}`
 
     notify.danger(message)
+    return null
   }
 }
