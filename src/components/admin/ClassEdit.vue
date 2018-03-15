@@ -19,24 +19,28 @@
                   label="Código aula"
                   type="number"
                   :disabled="loading || saving"
-                  v-model="model.code" />
+                  v-model="model.code"
+                  v-validation="validation.code" />
               </div>
               <div class="col-md-4">
                 <Input
                   label="Título aula"
                   :disabled="loading || saving"
-                  v-model="model.title" />
+                  v-model="model.title"
+                  v-validation="validation.title" />
               </div>
               <div class="col-md-6">
                 <Input
                   label="Subtítulo aula"
                   :disabled="loading || saving"
-                  v-model="model.subTitle" />
+                  v-model="model.subTitle"
+                  v-validation="validation.subTitle" />
               </div>
             </div>
             <div class="row">
-              <div class="col-md-10">
-                <div class="form-group label-floating form-info">
+              <div class="col-md-12">
+                <div class="form-group label-floating form-info"
+                  v-validation="validation.description">
                   <label class="control-label">Descrição aula</label>
                   <textarea
                     class="form-control"
@@ -79,20 +83,23 @@
               <div class="row">
                 <div class="col-md-6">
                   <Input
-                    label="Nome fase"
+                    label="Nome módulo"
                     :disabled="loading || saving"
-                    v-model="model.fase.name" />
+                    v-model="model.module.name"
+                    v-validation="validation.module.name" />
                 </div>
                 <div class="col-md-6">
                   <Input
-                    label="Nome módulo"
+                    label="Nome fase"
                     :disabled="loading || saving"
-                    v-model="model.module.name" />
+                    v-model="model.fase.name"
+                    v-validation="validation.fase.name" />
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-10">
-                  <div class="form-group label-floating form-info">
+                <div class="col-md-12">
+                  <div class="form-group label-floating form-info"
+                    v-validation="validation.module.description">
                     <label class="control-label">Descrição módulo</label>
                     <textarea
                       class="form-control"
@@ -108,14 +115,16 @@
               <div class="row">
                 <div class="col-md-6">
                   <Input
-                    label="Títul semana especial"
+                    label="Título semana especial"
                     :disabled="loading || saving"
-                    v-model="model.specialWeek.title" />
+                    v-model="model.specialWeek.title"
+                    v-validation="validation.specialWeek.title" />
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-10">
-                  <div class="form-group label-floating form-info">
+                <div class="col-md-12">
+                  <div class="form-group label-floating form-info"
+                    v-validation="validation.specialWeek.description">
                     <label class="control-label">Descrição semana especial</label>
                     <textarea
                       class="form-control"
@@ -150,6 +159,8 @@
 import Input from '@/components/shared/Input'
 import Radio from '@/components/shared/Radio'
 
+import validation from '@/shared/validationDirective'
+
 import utils from '@/shared/utils'
 
 export default {
@@ -161,7 +172,7 @@ export default {
     },
     lesson: {
       type: Object,
-      default: () => ({ fase: {}, module: {}, specialWeek: {} })
+      default: () => ({ relation: 'none', fase: {}, module: {}, specialWeek: {} })
     }
   },
   data () {
@@ -169,7 +180,8 @@ export default {
       isAdd: false,
       loading: false,
       saving: false,
-      model: this.lesson
+      model: this.lesson,
+      validation: { fase: {}, module: {}, specialWeek: {} }
     }
   },
   created () {
@@ -225,6 +237,9 @@ export default {
   components: {
     Input,
     Radio
+  },
+  directives: {
+    validation
   }
 }
 </script>
