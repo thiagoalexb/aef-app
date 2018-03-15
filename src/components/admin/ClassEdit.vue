@@ -12,47 +12,120 @@
 
         <div class="card-content">
           <form @submit.prevent="isAdd ? add() : update()">
+
             <div class="row">
+              <div class="col-md-2">
+                <Input
+                  label="Código aula"
+                  type="number"
+                  :disabled="loading || saving"
+                  v-model="model.code" />
+              </div>
+              <div class="col-md-4">
+                <Input
+                  label="Título aula"
+                  :disabled="loading || saving"
+                  v-model="model.title" />
+              </div>
               <div class="col-md-6">
                 <Input
-                  label="E-mail"
-                  type="email"
+                  label="Subtítulo aula"
                   :disabled="loading || saving"
-                  v-model="model.email" />
+                  v-model="model.subTitle" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-10">
+                <div class="form-group label-floating form-info">
+                  <label class="control-label">Descrição aula</label>
+                  <textarea
+                    class="form-control"
+                    :disabled="loading || saving"
+                    v-model="model.description">
+                  </textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label>Tipo de vínculo aula:</label>
               </div>
             </div>
             <div class="row">
               <div class="col-md-4">
-                <Input
-                  label="Nome"
+                <Radio
+                  label="Fase"
                   :disabled="loading || saving"
-                  v-model="model.firstName" />
+                  value="fase"
+                  v-model="model.relation" />
               </div>
-              <div class="col-md-8">
-                <Input
-                  label="Sobrenome"
+              <div class="col-md-4">
+                <Radio
+                  label="Semana especial"
                   :disabled="loading || saving"
-                  v-model="model.lastName" />
+                  value="specialWeek"
+                  v-model="model.relation" />
+              </div>
+              <div class="col-md-4">
+                <Radio
+                  label="Nenhum"
+                  :disabled="loading || saving"
+                  value="none"
+                  v-model="model.relation" />
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-8">
-                <div class="form-group label-floating">
-                  <DateInput
-                    label="Data de nascimento"
-                    type="date"
+
+            <section v-show="model.relation === 'fase'">
+              <div class="row">
+                <div class="col-md-6">
+                  <Input
+                    label="Nome fase"
                     :disabled="loading || saving"
-                    v-model="model.dateOfBirth" />
+                    v-model="model.fase.name" />
+                </div>
+                <div class="col-md-6">
+                  <Input
+                    label="Nome módulo"
+                    :disabled="loading || saving"
+                    v-model="model.module.name" />
                 </div>
               </div>
-              <div class="col-md-1"></div>
-              <div class="col-md-3">
-                <Checkbox
-                  label="E-mail confirmado"
-                  disabled
-                  v-model="model.isVerified" />
+              <div class="row">
+                <div class="col-md-10">
+                  <div class="form-group label-floating form-info">
+                    <label class="control-label">Descrição módulo</label>
+                    <textarea
+                      class="form-control"
+                      :disabled="loading || saving"
+                      v-model="model.module.description">
+                    </textarea>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
+
+            <section v-show="model.relation === 'specialWeek'">
+              <div class="row">
+                <div class="col-md-6">
+                  <Input
+                    label="Títul semana especial"
+                    :disabled="loading || saving"
+                    v-model="model.specialWeek.title" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-10">
+                  <div class="form-group label-floating form-info">
+                    <label class="control-label">Descrição semana especial</label>
+                    <textarea
+                      class="form-control"
+                      :disabled="loading || saving"
+                      v-model="model.specialWeek.description">
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+            </section>
 
             <button
               type="submit"
@@ -63,6 +136,7 @@
             <router-link :to="{ name: 'class' }" class="btn btn-link pull-right">Voltar</router-link>
 
             <div class="clearfix"></div>
+
           </form>
         </div>
 
@@ -74,8 +148,8 @@
 
 <script>
 import Input from '@/components/shared/Input'
-import DateInput from '@/components/shared/DateInput'
-import Checkbox from '@/components/shared/Checkbox'
+import Radio from '@/components/shared/Radio'
+
 import utils from '@/shared/utils'
 
 export default {
@@ -87,7 +161,7 @@ export default {
     },
     lesson: {
       type: Object,
-      default: () => ({})
+      default: () => ({ fase: {}, module: {}, specialWeek: {} })
     }
   },
   data () {
@@ -101,19 +175,28 @@ export default {
   created () {
     this.isAdd = this.$route.name === 'classAdd'
 
-    if (this.model.id) utils.convertDateInObject(this.model)
-    else if (this.id) {
+    if (this.model.id) {
+      utils.convertDateInObject(this.model)
+      this.defineRelation()
+    } else if (this.id) {
       this.loading = true
       this.$api.lesson.getById({ id: this.id })
         .then(data => {
           this.loading = false
-          if (data.success) this.model = utils.convertDateInObject(data.data)
-          else utils.handleApiError(data, 'buscar aula')
+          if (data.success) {
+            this.model = utils.convertDateInObject(data.data)
+            this.defineRelation()
+          } else utils.handleApiError(data, 'buscar aula')
         })
         .catch(() => { this.loading = false })
     }
   },
   methods: {
+    defineRelation () {
+      if (this.model.moduleId) this.model.relation = 'fase'
+      else if (this.model.specialWeekId) this.model.relation = 'specialWeek'
+      else this.model.relation = 'none'
+    },
     add () {
       this.saving = true
       this.$api.lesson.add(this.model)
@@ -141,8 +224,7 @@ export default {
   },
   components: {
     Input,
-    Checkbox,
-    DateInput
+    Radio
   }
 }
 </script>
