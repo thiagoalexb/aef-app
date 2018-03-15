@@ -4,7 +4,7 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="card">
         <div class="card-header" data-background-color="blue">
-          <h4 class="title">{{isAdd ? 'Cadastrar usuário' : 'Alterar usuário'}}</h4>
+          <h4 class="title">{{isAdd ? 'Adicionar usuário' : 'Atualizar usuário'}}</h4>
           <p class="category">Formulário de {{isAdd ? 'inclusão' : 'alteração'}} de usuário</p>
           <b v-show="loading">Carregando...</b>
           <b v-show="saving">Salvando...</b>
@@ -18,7 +18,8 @@
                   label="E-mail"
                   type="email"
                   :disabled="loading || saving"
-                  v-model="model.email" />
+                  v-model="model.email"
+                  v-validation="validation.email" />
               </div>
             </div>
             <div class="row">
@@ -26,13 +27,15 @@
                 <Input
                   label="Nome"
                   :disabled="loading || saving"
-                  v-model="model.firstName" />
+                  v-model="model.firstName"
+                  v-validation="validation.firstName" />
               </div>
               <div class="col-md-8">
                 <Input
                   label="Sobrenome"
                   :disabled="loading || saving"
-                  v-model="model.lastName" />
+                  v-model="model.lastName"
+                  v-validation="validation.lastName" />
               </div>
             </div>
             <div class="row">
@@ -42,7 +45,8 @@
                     label="Data de nascimento"
                     type="date"
                     :disabled="loading || saving"
-                    v-model="model.dateOfBirth" />
+                    v-model="model.dateOfBirth"
+                    v-validation.icon-none="validation.dateOfBirth" />
                 </div>
               </div>
               <div class="col-md-1"></div>
@@ -58,7 +62,7 @@
               type="submit"
               class="btn btn-success pull-right"
               :disabled="loading || saving">
-              {{isAdd ? 'Cadastrar' : 'Atualizar' }}
+              {{isAdd ? 'Adicionar' : 'Atualizar' }}
             </button>
             <router-link :to="{ name: 'user' }" class="btn btn-link pull-right">Voltar</router-link>
 
@@ -76,6 +80,9 @@
 import Input from '@/components/shared/Input'
 import DateInput from '@/components/shared/DateInput'
 import Checkbox from '@/components/shared/Checkbox'
+
+import validation from '@/shared/validationDirective'
+
 import utils from '@/shared/utils'
 
 export default {
@@ -95,11 +102,12 @@ export default {
       isAdd: false,
       loading: false,
       saving: false,
-      model: this.user
+      model: this.user,
+      validation: {}
     }
   },
   created () {
-    if (this.$attrs.add) this.isAdd = this.$attrs.add
+    this.isAdd = this.$route.name === 'userAdd'
     if (this.model.id) utils.convertDateInObject(this.model)
     else if (this.id) {
       this.loading = true
@@ -121,7 +129,7 @@ export default {
           if (data.success) {
             this.$notify.success('Usuário salvo com sucesso')
             this.$router.push('/user')
-          } else utils.handleApiError(data, 'salvar usuário')
+          } else this.validation = utils.handleApiError(data, 'salvar usuário')
         })
         .catch(() => { this.saving = false })
     },
@@ -133,7 +141,7 @@ export default {
           if (data.success) {
             this.$notify.success('Usuário salvo com sucesso')
             this.$router.push('/user')
-          } else utils.handleApiError(data, 'salvar usuário')
+          } else this.validation = utils.handleApiError(data, 'salvar usuário')
         })
         .catch(() => { this.saving = false })
     }
@@ -142,6 +150,9 @@ export default {
     Input,
     Checkbox,
     DateInput
+  },
+  directives: {
+    validation
   }
 }
 </script>

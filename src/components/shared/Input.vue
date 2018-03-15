@@ -1,5 +1,5 @@
 <template lang="html">
-  <div ref="container" :class="containerClasses">
+  <div ref="container" class="form-group label-floating form-info">
     <label class="control-label">{{label}}</label>
     <input
       ref="input"
@@ -9,11 +9,7 @@
       @input="$emit('input', $event.target.value)"
       :disabled="disabled"
       :autofocus="autofocus">
-    <span v-show="stateFeedbackIcon" class="form-control-feedback">
-      <i class="material-icons">{{stateFeedbackIcon}}</i>
-    </span>
-    <span v-show="message" class="help-block">{{message}}</span>
-  </div>
+</div>
 </template>
 
 <script>
@@ -35,19 +31,6 @@ export default {
       type: String,
       default: undefined
     },
-    state: {
-      type: String,
-      validator: (value) => [ 'error', 'success', 'info', 'warning' ].includes(value)
-    },
-    // material-icons
-    // set null to not show icon
-    stateFeedback: {
-      type: String,
-      default: undefined
-    },
-    message: {
-      type: String
-    },
     autofocus: {
       type: Boolean
     }
@@ -55,34 +38,6 @@ export default {
   data () {
     return {
       unwatch: null
-    }
-  },
-  computed: {
-    stateFeedbackIcon () {
-      if (this.stateFeedback || this.stateFeedback === null) return this.stateFeedback
-
-      switch (this.state) {
-        case 'error':
-          return 'clear'
-        case 'success':
-          return 'done'
-        case 'info':
-          return 'info_outline'
-        case 'warning':
-          return 'warning'
-        default:
-          return null
-      }
-    },
-    containerClasses () {
-      const classes = [
-        'form-group',
-        'form-info',
-        'label-floating'
-      ]
-
-      if (this.state) classes.push(`has-${this.state}`)
-      return classes
     }
   },
   methods: {

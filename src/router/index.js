@@ -106,7 +106,6 @@ export default new Router({
       path: '/usuario/adicionar',
       name: 'userAdd',
       component: UserEdit,
-      props: { add: true },
       meta: {
         title: 'Adicionar usuário',
         show: false
