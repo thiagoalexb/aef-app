@@ -9,7 +9,7 @@
       @input="$emit('input', $event.target.value)"
       :disabled="disabled"
       :autofocus="autofocus">
-</div>
+  </div>
 </template>
 
 <script>
