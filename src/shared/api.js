@@ -56,7 +56,11 @@ const apiCommonRoutes = [
   'event',
   'post',
   'tag',
-  'user'
+  'user',
+  'lesson',
+  'fase',
+  'module',
+  'specialWeek'
 ]
 
 const apiCommonSubRoutes = [
