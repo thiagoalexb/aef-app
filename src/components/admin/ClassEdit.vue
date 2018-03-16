@@ -14,6 +14,14 @@
           <form @submit.prevent="isAdd ? add() : update()">
 
             <div class="row">
+              <div class="col-md-12">
+                <Autocomplete
+                  label="Nosso teste"
+                  v-model="test"
+                  :items="items" />
+              </div>
+            </div>
+            <div class="row">
               <div class="col-md-2">
                 <Input
                   label="Código aula"
@@ -158,6 +166,7 @@
 <script>
 import Input from '@/components/shared/Input'
 import Radio from '@/components/shared/Radio'
+import Autocomplete from '@/components/shared/Autocomplete'
 
 import validation from '@/shared/validationDirective'
 
@@ -181,10 +190,15 @@ export default {
       loading: false,
       saving: false,
       model: this.lesson,
-      validation: { fase: {}, module: {}, specialWeek: {} }
+      validation: { fase: {}, module: {}, specialWeek: {} },
+      test: null,
+      items: null
     }
   },
   created () {
+    this.items = []
+    for (let i = 0; i < 10; i++) { this.items.push({ id: i, text: `item ${i}` }) }
+
     this.isAdd = this.$route.name === 'classAdd'
 
     if (this.model.id) {
@@ -236,7 +250,8 @@ export default {
   },
   components: {
     Input,
-    Radio
+    Radio,
+    Autocomplete
   },
   directives: {
     validation
