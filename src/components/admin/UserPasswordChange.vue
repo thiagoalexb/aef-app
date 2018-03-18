@@ -20,10 +20,11 @@
                     type="password"
                     v-model="password"
                     label="Nova senha"
+                    autofocus
+                    ref="password"
                     :disabled="loading"
-                    :state="passwordState.state"
-                    :message="passwordState.message"
-                    @input="passwordChanged" />
+                    v-validation.error="validation.password"
+                    v-validation.success="validation.valid" />
               </div>
             </div>
             <div class="row">
@@ -33,17 +34,14 @@
                     v-model="confirmPassword"
                     label="Confirme a senha"
                     :disabled="loading"
-                    :state="passwordState.state"
-                    :message="passwordState.message"
-                    @input="passwordChanged" />
+                    v-validation.error="validation.confirmPassword"
+                    v-validation.success="validation.valid" />
               </div>
             </div>
 
-            <slot name="after"></slot>
-
             <button
               type="submit"
-              :disabled="loading || !passwordState.valid || !password || !confirmPassword"
+              :disabled="loading"
               class="pull-right btn btn-success">
               <i class="material-icons" style="margin-right: 5px">check</i>Salvar
             </button>
@@ -61,6 +59,8 @@
 
 <script>
 import Input from '@/components/shared/Input'
+
+import validation from '@/shared/validationDirective'
 
 import utils from '@/shared/utils'
 import * as authentication from '@/shared/authentication'
@@ -85,7 +85,8 @@ export default {
       confirmPassword: null,
       submited: false,
       loading: true,
-      logging: false
+      logging: false,
+      serverValidation: null
     }
   },
   created () {
@@ -102,6 +103,7 @@ export default {
             if (!data.data.isVerified) {
               // account not verified, ok set password
               this.id = data.data.userId
+              this.$refs.password.focus()
             } else if (data.data.isVerified) {
               // account verified, send to login
               this.$notify.warning('Sua conta já está ativa, faça o login.')
@@ -114,14 +116,22 @@ export default {
       this.title = 'Recuperação de senha'
 
       // verify email and password recover token
-      this.$api.verifyPasswordToken({
+      this.$api.user.verifyPasswordToken({
         email: this.email,
         token: this.recoverPasswordToken
       })
         .then(data => {
-          // invalid token / email, return to login
-          if (!data.success) this.$router.push('/login')
+          this.loading = false
+          if (data.success) {
+            this.id = data.data.userId
+            this.$refs.password.focus()
+          } else if (!data.success) {
+            utils.handleApiError(data, 'verificar requisição de alteração de senha')
+            // invalid token / email, return to login
+            this.$router.push('/login')
+          }
         })
+        .catch(() => { this.loading = false })
     }
   },
   methods: {
@@ -140,7 +150,7 @@ export default {
         .then(data => {
           if (data.success) {
             this.login()
-          } else utils.handleApiError(data, 'atualizar senha')
+          } else this.serverValidation = utils.handleApiError(data, 'atualizar senha')
         })
     },
     login () {
@@ -160,30 +170,30 @@ export default {
     }
   },
   computed: {
-    passwordState () {
+    validation () {
       const state = {
         valid: false,
-        state: null,
-        message: null
+        password: null,
+        confirmPassword: null
       }
 
-      state.valid = this.password &&
+      state.valid = this.submited &&
+        this.password &&
         this.confirmPassword &&
         this.password === this.confirmPassword
 
-      if (this.submited) {
-        if (!this.password || !this.confirmPassword) {
-          state.valid = false
-          return state
-        } else if (this.password !== this.confirmPassword) {
-          state.valid = false
-          state.state = 'error'
-          state.message = 'A senha digitada não confere'
-        } else {
-          state.valid = true
-          state.state = 'success'
-          state.message = null
-        }
+      if (this.serverValidation) {
+        // server validation
+        state.password = this.serverValidation.password
+        state.confirmPassword = this.serverValidation.confirmPassword
+      } else if (this.submited) {
+        // client validation
+        const passwordEqual = this.password === this.confirmPassword
+        if (!this.password) state.password = 'Obrigatório'
+        if (!this.confirmPassword) state.confirmPassword = 'Obrigatório'
+
+        if (!passwordEqual && !state.password) state.password = 'A senha digitada não confere'
+        if (!passwordEqual && !state.confirmPassword) state.confirmPassword = 'A senha digitada não confere'
       }
 
       return state
@@ -191,6 +201,9 @@ export default {
   },
   components: {
     Input
+  },
+  directives: {
+    validation
   }
 }
 </script>
