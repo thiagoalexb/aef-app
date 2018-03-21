@@ -18,7 +18,10 @@
                 <Autocomplete
                   label="Nosso teste"
                   v-model="test"
-                  :items="items" />
+                  :items="items"
+                  item-id="aidi"
+                  item-label="testo" />
+                  <p>{{test}}</p>
               </div>
             </div>
             <div class="row">
@@ -197,7 +200,7 @@ export default {
   },
   created () {
     this.items = []
-    for (let i = 0; i < 10; i++) { this.items.push({ id: i, text: `item ${i}` }) }
+    for (let i = 0; i < 10; i++) { this.items.push({ aidi: i, testo: `item ${i}` }) }
 
     this.isAdd = this.$route.name === 'classAdd'
 

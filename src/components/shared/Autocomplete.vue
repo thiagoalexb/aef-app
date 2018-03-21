@@ -22,15 +22,15 @@
       ref="btnDropdown">
         <i class="material-icons">arrow_drop_down</i>
     </span>
-    <ul class="dropdown-menu" ref="dropdown">
+    <ul class="dropdown-menu col-md-12" ref="dropdown">
       <li
         v-for="i in list"
-        :key="i.id"
+        :key="i[itemId]"
         :class="{ active: index === list.indexOf(i) }">
         <a
           href="#"
           @mousedown="select(i)"
-          v-html="$options.filters.matched(i.text, search)">
+          v-html="$options.filters.matched(i[itemLabel], search)">
         </a>
       </li>
     </ul>
@@ -56,6 +56,14 @@ export default {
     items: {
       type: Array,
       required: true // object: { id: String, text: String }
+    },
+    itemId: {
+      type: String,
+      default: 'id'
+    },
+    itemLabel: {
+      type: String,
+      default: 'text'
     }
   },
   data () {
@@ -69,7 +77,7 @@ export default {
     list () {
       // filter and take just 10
       return this.items.filter(i =>
-        i.text.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+        i[this.itemLabel].toLowerCase().indexOf(this.search.toLowerCase()) > -1
       ).slice(0, 10)
     }
   },
@@ -80,7 +88,7 @@ export default {
         this.$refs.container.className.indexOf('is-empty') > -1) {
         this.$refs.container.classList.remove('is-empty')
         this.$nextTick(() => this.unwatch())
-        this.search = val.text
+        this.search = val[this.itemLabel]
       }
     })
   },
@@ -88,7 +96,7 @@ export default {
     select (item) {
       this.selected = item
       this.$emit('input', item)
-      this.search = item.text
+      this.search = item[this.itemLabel]
 
       // select next input
       let next = false
@@ -115,7 +123,7 @@ export default {
 
       // set search text
       if (this.selected) {
-        this.search = this.selected.text
+        this.search = this.selected[this.itemLabel]
       } else {
         this.search = ''
       }
