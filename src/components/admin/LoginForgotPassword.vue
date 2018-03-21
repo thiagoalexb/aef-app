@@ -11,6 +11,7 @@
     <div class="row">
       <div class="col-md-12">
         <button
+          :disabled="loading"
           :class="`btn btn-${buttonColor} pull-right`">
           Enviar
         </button>
