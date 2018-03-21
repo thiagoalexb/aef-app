@@ -14,17 +14,6 @@
           <form @submit.prevent="isAdd ? add() : update()">
 
             <div class="row">
-              <div class="col-md-12">
-                <Autocomplete
-                  label="Nosso teste"
-                  v-model="test"
-                  :items="items"
-                  item-id="aidi"
-                  item-label="testo" />
-                  <p>{{test}}</p>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-2">
                 <Input
                   label="Código aula"
@@ -93,18 +82,26 @@
             <section v-show="model.relation === 'fase'">
               <div class="row">
                 <div class="col-md-6">
-                  <Input
+                  <Autocomplete
                     label="Nome módulo"
                     :disabled="loading || saving"
-                    v-model="model.module.name"
-                    v-validation="validation.module.name" />
+                    v-model="model.module"
+                    :items="modules"
+                    item-label="name"
+                    :select-not-found="true"
+                    v-validation="validation.module.name"
+                    v-validation.warning.icon-add="model.module.id === null ? `Será adicionado um novo módulo com o nome de \'${model.module.name}\'`: false" />
                 </div>
                 <div class="col-md-6">
-                  <Input
+                  <Autocomplete
                     label="Nome fase"
                     :disabled="loading || saving"
-                    v-model="model.fase.name"
-                    v-validation="validation.fase.name" />
+                    v-model="model.fase"
+                    :items="fases"
+                    item-label="name"
+                    :select-not-found="true"
+                    v-validation="validation.fase.name"
+                    v-validation.warning.icon-add="model.fase.id === null ? `Será adicionado uma nova fase com o nome de \'${model.module.name}\'`: false" />
                 </div>
               </div>
               <div class="row">
@@ -124,12 +121,16 @@
 
             <section v-show="model.relation === 'specialWeek'">
               <div class="row">
-                <div class="col-md-6">
-                  <Input
+                <div class="col-md-10">
+                  <Autocomplete
                     label="Título semana especial"
                     :disabled="loading || saving"
-                    v-model="model.specialWeek.title"
-                    v-validation="validation.specialWeek.title" />
+                    v-model="model.specialWeek"
+                    :items="specialWeeks"
+                    item-label="title"
+                    :select-not-found="true"
+                    v-validation="validation.specialWeek.title"
+                    v-validation.warning.icon-add="model.specialWeek.id === null ? `Será adicionado uma nova semana especial com o nome de \'${model.specialWeek.title}\'`: false" />
                 </div>
               </div>
               <div class="row">
@@ -195,12 +196,17 @@ export default {
       model: this.lesson,
       validation: { fase: {}, module: {}, specialWeek: {} },
       test: null,
-      items: null
+      modules: [],
+      fases: [],
+      specialWeeks: []
     }
   },
   created () {
-    this.items = []
-    for (let i = 0; i < 10; i++) { this.items.push({ aidi: i, testo: `item ${i}` }) }
+    for (let i = 1; i <= 10; i++) {
+      this.modules.push({ id: i, name: `module ${i}` })
+      this.fases.push({ id: i, name: `fase ${i}` })
+      this.specialWeeks.push({ id: i, title: `special week ${i}` })
+    }
 
     this.isAdd = this.$route.name === 'classAdd'
 
