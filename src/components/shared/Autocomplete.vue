@@ -33,6 +33,10 @@
           v-html="$options.filters.matched(i[itemLabel], search)">
         </a>
       </li>
+      <li
+        v-show="!list.length">
+        {{notFoundLabel}}
+      </li>
     </ul>
   </div>
 </template>
@@ -64,6 +68,14 @@ export default {
     itemLabel: {
       type: String,
       default: 'text'
+    },
+    notFoundLabel: {
+      type: String,
+      default: 'Nenhum resultado encontrado'
+    },
+    selectNotFound: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -94,9 +106,11 @@ export default {
   },
   methods: {
     select (item) {
-      this.selected = item
-      this.$emit('input', item)
-      this.search = item[this.itemLabel]
+      if (item) {
+        this.selected = item
+        this.$emit('input', item)
+        this.search = item[this.itemLabel]
+      }
 
       // select next input
       let next = false
@@ -122,10 +136,12 @@ export default {
       this.$refs.container.classList.remove('open')
 
       // set search text
-      if (this.selected) {
+      if (this.selected && !this.selectNotFound) {
         this.search = this.selected[this.itemLabel]
-      } else {
+      } else if (!this.selectNotFound) {
         this.search = ''
+      } else if (this.selectNotFound && !this.list.length) {
+        this.$emit('input', { [this.itemId]: null, [this.itemLabel]: this.search })
       }
 
       // remove is-empty if necessary
