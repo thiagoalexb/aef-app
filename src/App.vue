@@ -188,7 +188,8 @@ export default {
 </script>
 
 <style lang="sass">
-@import ./assets/scss/_colors
+@import ./assets/scss/_colors.scss
+@import ./assets/scss/app.sass
 
 .sidebar-wrapper ul.nav
   li.active.orange a
