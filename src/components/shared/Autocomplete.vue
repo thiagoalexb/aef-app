@@ -1,28 +1,31 @@
 <template lang="html">
   <div ref="container" class="form-group label-floating form-info dropdown">
     <label class="control-label">{{label}}</label>
-    <input
-      type="text"
-      class="form-control"
-      ref="input"
-      v-model="search"
-      :disabled="disabled"
-      :autofocus="autofocus"
-      @keydown.up="up"
-      @keydown.down="down"
-      @keydown.enter.prevent="select(list[index])"
-      @focus="focus"
-      @blur="unfocus" />
-    <span
-      class="form-control-feedback"
-      data-toggle="dropdown"
-      role="button"
-      aria-haspopup="true"
-      aria-expanded="false"
-      ref="btnDropdown">
-        <i class="material-icons">arrow_drop_down</i>
-    </span>
-    <ul class="dropdown-menu col-md-12" ref="dropdown">
+    <div class="input-group">
+      <input
+            type="text"
+            class="form-control"
+            ref="input"
+            v-model="search"
+            :disabled="disabled"
+            :autofocus="autofocus"
+            @keydown.up="up"
+            @keydown.down="down"
+            @keydown.enter.prevent="select(list[index])"
+            @focus="focus"
+            @blur="unfocus" />
+      <div
+        class="input-group-addon"
+        data-toggle="dropdown"
+        role="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        ref="btnDropdown"
+        @click="$emit('input', {}); focus()">
+          <i class="material-icons">clear</i>
+      </div>
+    </div>
+        <ul class="dropdown-menu col-md-12" ref="dropdown">
       <li
         v-for="i in list"
         :key="i[itemId]"
@@ -128,6 +131,7 @@ export default {
     focus () {
       this.search = ''
       this.$refs.container.classList.add('open')
+      this.$refs.input.focus()
     },
     unfocus () {
       // reset index selection
@@ -140,8 +144,10 @@ export default {
         this.search = this.selected[this.itemLabel]
       } else if (!this.selectNotFound) {
         this.search = ''
-      } else if (this.selectNotFound && !this.list.length) {
+      } else if (this.selectNotFound && this.search && !this.list.length) {
         this.$emit('input', { [this.itemId]: null, [this.itemLabel]: this.search })
+      } else if (this.value && this.value[this.itemLabel]) {
+        this.search = this.value[this.itemLabel]
       }
 
       // remove is-empty if necessary
@@ -172,7 +178,7 @@ export default {
 </script>
 
 <style scoped>
-ul li:hover {
+ul li:hover,  .form-group.dropdown span.form-control-feedback:hover {
   cursor: pointer;
 }
 </style>
