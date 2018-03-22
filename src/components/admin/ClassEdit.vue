@@ -83,6 +83,17 @@
               <div class="row">
                 <div class="col-md-6">
                   <Autocomplete
+                    label="Nome fase"
+                    :disabled="loading || saving"
+                    v-model="model.fase"
+                    :items="fases"
+                    item-label="name"
+                    :select-not-found="true"
+                    v-validation="validation.fase.name"
+                    v-validation.warning.icon-add="model.fase.id === null ? `Será adicionado uma nova fase com o nome de \'${model.fase.name}\'`: false" />
+                </div>
+                <div class="col-md-6">
+                  <Autocomplete
                     label="Nome módulo"
                     :disabled="loading || saving"
                     v-model="model.module"
@@ -91,17 +102,6 @@
                     :select-not-found="true"
                     v-validation="validation.module.name"
                     v-validation.warning.icon-add="model.module.id === null ? `Será adicionado um novo módulo com o nome de \'${model.module.name}\'`: false" />
-                </div>
-                <div class="col-md-6">
-                  <Autocomplete
-                    label="Nome fase"
-                    :disabled="loading || saving"
-                    v-model="model.fase"
-                    :items="fases"
-                    item-label="name"
-                    :select-not-found="true"
-                    v-validation="validation.fase.name"
-                    v-validation.warning.icon-add="model.fase.id === null ? `Será adicionado uma nova fase com o nome de \'${model.module.name}\'`: false" />
                 </div>
               </div>
               <div class="row">
