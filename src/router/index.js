@@ -58,7 +58,7 @@ export default new Router({
       component: Class,
       meta: {
         title: 'Aulas',
-        icon: 'class',
+        icon: 'tv',
         show: true
       }
     },
