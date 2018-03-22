@@ -43,8 +43,17 @@
               type="submit"
               :disabled="loading"
               class="pull-right btn btn-success">
-              <i class="material-icons" style="margin-right: 5px">check</i>Salvar
+              <i class="material-icons" style="margin-right: 5px">
+                check
+              </i>
+              Salvar
             </button>
+            <router-link
+              :to="{ name: 'login' }"
+              class="btn btn-simple pull-left">
+              <i class="material-icons">chevron_left</i>
+              Login
+            </router-link>
 
             <div class="clearfix"></div>
           </form>

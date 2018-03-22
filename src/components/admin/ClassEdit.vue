@@ -3,7 +3,7 @@
 
     <div class="col-md-8 col-md-offset-2">
       <div class="card">
-        <div class="card-header" data-background-color="blue">
+        <div class="card-header" data-background-color="red">
           <h4 class="title">{{isAdd ? 'Adicionar aula' : 'Atualizar aula'}}</h4>
           <p class="category">Formulário de {{isAdd ? 'inclusão' : 'alteração'}} de aula</p>
           <b v-show="loading">Carregando...</b>
@@ -154,7 +154,12 @@
               :disabled="loading || saving">
               {{isAdd ? 'Adicionar' : 'Atualizar' }}
             </button>
-            <router-link :to="{ name: 'class' }" class="btn btn-link pull-right">Voltar</router-link>
+            <router-link
+              :to="{ name: 'class' }"
+              class="btn btn-simple pull-left">
+              <i class="material-icons">chevron_left</i>
+              Voltar
+            </router-link>
 
             <div class="clearfix"></div>
 

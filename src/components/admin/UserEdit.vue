@@ -64,7 +64,12 @@
               :disabled="loading || saving">
               {{isAdd ? 'Adicionar' : 'Atualizar' }}
             </button>
-            <router-link :to="{ name: 'user' }" class="btn btn-link pull-right">Voltar</router-link>
+            <router-link
+              :to="{ name: 'user' }"
+              class="btn btn-simple pull-left">
+              <i class="material-icons">chevron_left</i>
+              Voltar
+            </router-link>
 
             <div class="clearfix"></div>
           </form>
