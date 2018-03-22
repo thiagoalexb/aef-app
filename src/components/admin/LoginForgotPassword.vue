@@ -15,18 +15,15 @@
           :class="`btn btn-${buttonColor} pull-right`">
           Enviar
         </button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12">
         <router-link
-          class="pull-left"
+          class="btn btn-simple pull-left"
           :to="{ name: 'login' }">
+          <i class="material-icons">chevron_left</i>
           Voltar
         </router-link>
       </div>
     </div>
+
   </form>
 </template>
 
