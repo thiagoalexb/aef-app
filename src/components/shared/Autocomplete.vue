@@ -37,7 +37,7 @@
         </a>
       </li>
       <li
-        v-show="!list.length">
+        v-show="!list.length && notFoundLabel">
         {{notFoundLabel}}
       </li>
     </ul>

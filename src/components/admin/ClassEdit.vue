@@ -14,43 +14,6 @@
           <form @submit.prevent="isAdd ? add() : update()">
 
             <div class="row">
-              <div class="col-md-2">
-                <Input
-                  label="Código aula"
-                  type="number"
-                  :disabled="loading || saving"
-                  v-model="model.code"
-                  v-validation="validation.code" />
-              </div>
-              <div class="col-md-4">
-                <Input
-                  label="Título aula"
-                  :disabled="loading || saving"
-                  v-model="model.title"
-                  v-validation="validation.title" />
-              </div>
-              <div class="col-md-6">
-                <Input
-                  label="Subtítulo aula"
-                  :disabled="loading || saving"
-                  v-model="model.subTitle"
-                  v-validation="validation.subTitle" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group label-floating form-info"
-                  v-validation="validation.description">
-                  <label class="control-label">Descrição aula</label>
-                  <textarea
-                    class="form-control"
-                    :disabled="loading || saving"
-                    v-model="model.description">
-                  </textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-12">
                 <label>Tipo de vínculo aula:</label>
               </div>
@@ -148,12 +111,84 @@
               </div>
             </section>
 
-            <button
-              type="submit"
-              class="btn btn-success pull-right"
-              :disabled="loading || saving">
-              {{isAdd ? 'Adicionar' : 'Atualizar' }}
-            </button>
+            <div class="row">
+              <div class="col-md-2">
+                <Input
+                  label="Código aula"
+                  type="number"
+                  :disabled="loading || saving"
+                  v-model="model.code"
+                  v-validation="validation.code" />
+              </div>
+              <div class="col-md-4">
+                <Input
+                  label="Título aula"
+                  :disabled="loading || saving"
+                  v-model="model.title"
+                  v-validation="validation.title" />
+              </div>
+              <div class="col-md-6">
+                <Input
+                  label="Subtítulo aula"
+                  :disabled="loading || saving"
+                  v-model="model.subTitle"
+                  v-validation="validation.subTitle" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-9">
+                <div class="form-group label-floating form-info"
+                  v-validation="validation.description">
+                  <label class="control-label">Descrição aula</label>
+                  <textarea
+                    class="form-control"
+                    :disabled="loading || saving"
+                    v-model="model.description">
+                  </textarea>
+
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <button
+                  type="submit"
+                  class="btn btn-success pull-right"
+                  :disabled="loading || saving">
+                  {{isAdd ? 'Adicionar' : 'Atualizar' }}
+                </button>
+              </div>
+
+            </div>
+
+            <div class="col-md-12">
+              <div class="card card-plain">
+                <div class="card-header" data-background-color="red">
+                  <h4>Aulas do X</h4>
+                  <p class="category">Aulas do X</p>
+                </div>
+                <div class="card-content table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Título</th>
+                        <th>Subtítulo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="c in classes"
+                        :key="c.id">
+                        <td>{{c.code}}</td>
+                        <td>{{c.title}}</td>
+                        <td>{{c.subTitle}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
             <router-link
               :to="{ name: 'class' }"
               class="btn btn-simple pull-left">
@@ -161,9 +196,9 @@
               Voltar
             </router-link>
 
-            <div class="clearfix"></div>
-
           </form>
+
+          <div class="clearfix"></div>
         </div>
 
       </div>
@@ -203,7 +238,8 @@ export default {
       test: null,
       modules: [],
       fases: [],
-      specialWeeks: []
+      specialWeeks: [],
+      classes: []
     }
   },
   created () {
@@ -211,6 +247,7 @@ export default {
       this.modules.push({ id: i, name: `module ${i}` })
       this.fases.push({ id: i, name: `fase ${i}` })
       this.specialWeeks.push({ id: i, title: `special week ${i}` })
+      this.classes.push({ id: i, title: `aula ${i}` })
     }
 
     this.isAdd = this.$route.name === 'classAdd'
