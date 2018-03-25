@@ -24,27 +24,27 @@
                   label="Fase"
                   :disabled="loading || saving"
                   value="fase"
-                  v-model="model.relation" />
+                  v-model="relation" />
               </div>
               <div class="col-md-4">
                 <Radio
                   label="Semana especial"
                   :disabled="loading || saving"
                   value="specialWeek"
-                  v-model="model.relation" />
+                  v-model="relation" />
               </div>
               <div class="col-md-4">
                 <Radio
                   label="Nenhum"
                   :disabled="loading || saving"
                   value="none"
-                  v-model="model.relation" />
+                  v-model="relation" />
               </div>
             </div>
 
-            <section v-show="model.relation === 'fase'">
+            <section v-show="relation === 'fase'">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                   <Autocomplete
                     label="Nome fase"
                     :disabled="loading || saving"
@@ -55,7 +55,15 @@
                     v-validation="validation.fase.name"
                     v-validation.warning.icon-add="model.fase.id === null ? `Será adicionado uma nova fase com o nome de \'${model.fase.name}\'`: false" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-1">
+                  <button
+                    type="button"
+                    class="btn btn-xs btn-just-icon btn-round btn-success"
+                    :disabled="saving">
+                    <i class="material-icons">add</i>
+                  </button>
+                </div>
+                <div class="col-md-5">
                   <Autocomplete
                     label="Nome módulo"
                     :disabled="loading || saving"
@@ -65,6 +73,14 @@
                     :select-not-found="true"
                     v-validation="validation.module.name"
                     v-validation.warning.icon-add="model.module.id === null ? `Será adicionado um novo módulo com o nome de \'${model.module.name}\'`: false" />
+                </div>
+                <div class="col-md-1">
+                  <button
+                    type="button"
+                    class="btn btn-xs btn-just-icon btn-round btn-success"
+                    :disabled="saving">
+                    <i class="material-icons">add</i>
+                  </button>
                 </div>
               </div>
               <div class="row">
@@ -82,7 +98,7 @@
               </div>
             </section>
 
-            <section v-show="model.relation === 'specialWeek'">
+            <section v-show="relation === 'specialWeek'">
               <div class="row">
                 <div class="col-md-10">
                   <Autocomplete
@@ -94,6 +110,14 @@
                     :select-not-found="true"
                     v-validation="validation.specialWeek.title"
                     v-validation.warning.icon-add="model.specialWeek.id === null ? `Será adicionado uma nova semana especial com o nome de \'${model.specialWeek.title}\'`: false" />
+                </div>
+                <div class="col-md-1">
+                  <button
+                    type="button"
+                    class="btn btn-xs btn-just-icon btn-round btn-success"
+                    :disabled="saving">
+                    <i class="material-icons">add</i>
+                  </button>
                 </div>
               </div>
               <div class="row">
@@ -160,19 +184,20 @@
 
             </div>
 
-            <div class="col-md-12">
+            <div v-show="!(relation === 'none')" class="col-md-12">
               <div class="card card-plain">
                 <div class="card-header" data-background-color="red">
-                  <h4>Aulas do X</h4>
-                  <p class="category">Aulas do X</p>
+                  <h4>Aulas {{relation === 'fase' ? 'do módulo' : 'da semana especial'}}</h4>
+                  <!-- <p class="category"></p> -->
                 </div>
                 <div class="card-content table-responsive">
-                  <table class="table">
+                  <table class="table table-hover">
                     <thead>
                       <tr>
                         <th>Código</th>
                         <th>Título</th>
                         <th>Subtítulo</th>
+                        <th>Ações</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -182,6 +207,14 @@
                         <td>{{c.code}}</td>
                         <td>{{c.title}}</td>
                         <td>{{c.subTitle}}</td>
+                        <td>
+                          <button type="button" @click="updateClass(c)" class="btn btn-simple btn-warning">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button type="button" @click="removeClass(c)" class="btn btn-simple btn-danger">
+                            <i class="material-icons">delete</i>
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -225,7 +258,7 @@ export default {
     },
     lesson: {
       type: Object,
-      default: () => ({ relation: 'none', fase: {}, module: {}, specialWeek: {} })
+      default: () => ({ fase: {}, module: {}, specialWeek: {} })
     }
   },
   data () {
@@ -233,9 +266,9 @@ export default {
       isAdd: false,
       loading: false,
       saving: false,
+      relation: 'none',
       model: this.lesson,
       validation: { fase: {}, module: {}, specialWeek: {} },
-      test: null,
       modules: [],
       fases: [],
       specialWeeks: [],
@@ -270,9 +303,9 @@ export default {
   },
   methods: {
     defineRelation () {
-      if (this.model.moduleId) this.model.relation = 'fase'
-      else if (this.model.specialWeekId) this.model.relation = 'specialWeek'
-      else this.model.relation = 'none'
+      if (this.model.moduleId) this.relation = 'fase'
+      else if (this.model.specialWeekId) this.relation = 'specialWeek'
+      else this.relation = 'none'
     },
     add () {
       this.saving = true
@@ -297,6 +330,19 @@ export default {
           } else utils.handleApiError(data, 'salvar aula')
         })
         .catch(() => { this.saving = false })
+    },
+    updateClass (c) {
+      this.model = c
+    },
+    removeClass (c) {
+      this.saving = true
+      this.$api.lesson.delete({ id: c.id })
+        .then(data => {
+          if (data.success) {
+            this.$notify.undo('Aula removida', this.restoreClass.bind(this, c))
+            this.classes = this.classes.filter(cl => cl.id !== c.id)
+          } else utils.handleApiError(data, 'remover aula')
+        })
     }
   },
   components: {
