@@ -13,7 +13,8 @@
             @keydown.down="down"
             @keydown.enter.prevent="select(list[index])"
             @focus="focus"
-            @blur="unfocus" />
+            @blur="unfocus"
+            @input="list.length ? found() : notFound()" />
       <div
         class="input-group-addon"
         data-toggle="dropdown"
@@ -79,6 +80,10 @@ export default {
     selectNotFound: {
       type: Boolean,
       default: false
+    },
+    selectNotFoundImmediate: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -162,6 +167,19 @@ export default {
     },
     down () {
       if (this.index < (this.list.length - 1)) this.index++
+    },
+    found () {
+      if (this.selectNotFound &&
+          this.selectNotFoundImmediate &&
+          (!this.selected ||
+            (this.selected && this.selected.id === null))) {
+        this.$emit('input', {})
+      }
+    },
+    notFound () {
+      if (this.selectNotFound && this.selectNotFoundImmediate) {
+        this.$emit('input', { [this.itemId]: null, [this.itemLabel]: this.search })
+      }
     }
   },
   filters: {
