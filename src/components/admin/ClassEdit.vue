@@ -44,7 +44,7 @@
 
             <section v-show="relation === 'fase'">
               <div class="row">
-                <div class="col-md-5">
+                <div :class="model.fase.id === null ? 'col-md-5' : 'col-md-6'">
                   <Autocomplete
                     label="Nome fase"
                     :disabled="loading || saving"
@@ -52,18 +52,21 @@
                     :items="fases"
                     item-label="name"
                     :select-not-found="true"
-                    v-validation="validation.fase.name"
-                    v-validation.warning.icon-add="model.fase.id === null ? `Será adicionado uma nova fase com o nome de \'${model.fase.name}\'`: false" />
+                    v-validation="validation.fase.name || localValidation.fase.name"
+                    v-validation.warning.icon-add="model.fase.id === null ? `Fase \'${model.fase.name}\' não existe!`: false" />
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1" v-show="model.fase.id === null">
                   <button
                     type="button"
                     class="btn btn-xs btn-just-icon btn-round btn-success"
+                    rel="tooltip"
+                    data-placement="top"
+                    title="Adicionar"
                     :disabled="saving">
                     <i class="material-icons">add</i>
                   </button>
                 </div>
-                <div class="col-md-5">
+                <div :class="model.module.id === null ? 'col-md-5' : 'col-md-6'">
                   <Autocomplete
                     label="Nome módulo"
                     :disabled="loading || saving"
@@ -71,13 +74,16 @@
                     :items="modules"
                     item-label="name"
                     :select-not-found="true"
-                    v-validation="validation.module.name"
-                    v-validation.warning.icon-add="model.module.id === null ? `Será adicionado um novo módulo com o nome de \'${model.module.name}\'`: false" />
+                    v-validation="validation.module.name || localValidation.module.name"
+                    v-validation.warning.icon-add="model.module.id === null ? `Módulo \'${model.module.name}\' não existe!`: false" />
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1" v-show="model.module.id === null">
                   <button
                     type="button"
                     class="btn btn-xs btn-just-icon btn-round btn-success"
+                    rel="tooltip"
+                    data-placement="top"
+                    title="Adicionar"
                     :disabled="saving">
                     <i class="material-icons">add</i>
                   </button>
@@ -108,13 +114,16 @@
                     :items="specialWeeks"
                     item-label="title"
                     :select-not-found="true"
-                    v-validation="validation.specialWeek.title"
-                    v-validation.warning.icon-add="model.specialWeek.id === null ? `Será adicionado uma nova semana especial com o nome de \'${model.specialWeek.title}\'`: false" />
+                    v-validation="validation.specialWeek.title || localValidation.specialWeek.title"
+                    v-validation.warning.icon-add="model.specialWeek.id === null ? `Semana especial \'${model.specialWeek.title}\' não existe!`: false" />
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1" v-show="model.specialWeek.id === null">
                   <button
                     type="button"
                     class="btn btn-xs btn-just-icon btn-round btn-success"
+                    rel="tooltip"
+                    data-placement="top"
+                    title="Adicionar"
                     :disabled="saving">
                     <i class="material-icons">add</i>
                   </button>
@@ -177,7 +186,7 @@
                 <button
                   type="submit"
                   class="btn btn-success pull-right"
-                  :disabled="loading || saving">
+                  :disabled="loading || saving || !relationValid">
                   {{isAdd ? 'Adicionar' : 'Atualizar' }}
                 </button>
               </div>
@@ -207,11 +216,17 @@
                         <td>{{c.code}}</td>
                         <td>{{c.title}}</td>
                         <td>{{c.subTitle}}</td>
-                        <td>
-                          <button type="button" @click="updateClass(c)" class="btn btn-simple btn-warning">
+                        <td class="td-actions">
+                          <button
+                            type="button"
+                            @click="updateClass(c)"
+                            class="btn btn-simple btn-warning btn-sm btn-xs">
                             <i class="material-icons">edit</i>
                           </button>
-                          <button type="button" @click="removeClass(c)" class="btn btn-simple btn-danger">
+                          <button
+                            type="button"
+                            @click="removeClass(c)"
+                            class="btn btn-simple btn-danger btn-sm btn-xs">
                             <i class="material-icons">delete</i>
                           </button>
                         </td>
@@ -264,6 +279,7 @@ export default {
   data () {
     return {
       isAdd: false,
+      submited: false,
       loading: false,
       saving: false,
       relation: 'none',
@@ -280,7 +296,7 @@ export default {
       this.modules.push({ id: i, name: `module ${i}` })
       this.fases.push({ id: i, name: `fase ${i}` })
       this.specialWeeks.push({ id: i, title: `special week ${i}` })
-      this.classes.push({ id: i, title: `aula ${i}` })
+      if (i < 4) this.classes.push({ id: i, title: `aula ${i}` })
     }
 
     this.isAdd = this.$route.name === 'classAdd'
@@ -308,6 +324,7 @@ export default {
       else this.relation = 'none'
     },
     add () {
+      this.submited = true
       this.saving = true
       this.$api.lesson.add(this.model)
         .then(data => {
@@ -320,6 +337,7 @@ export default {
         .catch(() => { this.saving = false })
     },
     update () {
+      this.submited = true
       this.saving = true
       this.$api.lesson.update(this.model)
         .then(data => {
@@ -343,6 +361,31 @@ export default {
             this.classes = this.classes.filter(cl => cl.id !== c.id)
           } else utils.handleApiError(data, 'remover aula')
         })
+    }
+  },
+  computed: {
+    relationValid () {
+      if (!this.submited) return true
+
+      switch (this.relation) {
+        case 'fase':
+          return !!this.model.fase.id && !!this.model.module.id
+        case 'specialWeek':
+          return !!this.model.specialWeek.id
+        default:
+          return true
+      }
+    },
+    localValidation () {
+      const validation = { fase: {}, module: {}, specialWeek: {} }
+
+      if (!this.submited) return validation
+
+      validation.fase.name = this.model.fase.id !== null ? 'Selecione uma fase!' : ''
+      validation.module.name = this.model.module.id !== null ? 'Selecione um módulo!' : ''
+      validation.specialWeek.title = this.model.specialWeek.id !== null ? 'Selecione uma semana especial!' : ''
+
+      return validation
     }
   },
   components: {
