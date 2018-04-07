@@ -28,7 +28,6 @@ export default {
       default: false
     },
     value: {
-      type: String,
       default: undefined
     },
     autofocus: {
