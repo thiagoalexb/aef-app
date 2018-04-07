@@ -34,12 +34,12 @@
               <td>
                 <router-link
                   :to="{ name: 'userEdit', params: { id: user.id, user: user } }"
-                  class="btn btn-simple">
+                  class="btn btn-simple btn-xs">
                   <i class="material-icons">edit</i>
                 </router-link>
                 <button
                   type="button"
-                  class="btn btn-danger btn-simple"
+                  class="btn btn-danger btn-simple btn-xs"
                   @click="remove(user)">
                   <i class="material-icons">delete</i>
                 </button>
