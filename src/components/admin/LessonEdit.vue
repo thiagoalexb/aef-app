@@ -194,7 +194,7 @@
             </div>
 
             <div v-show="!(relation === 'none')" class="col-md-12">
-              <div class="card card-plain">
+              <div class="card">
                 <div class="card-header" data-background-color="red">
                   <h4>Aulas {{relation === 'fase' ? 'do módulo' : 'da semana especial'}}</h4>
                   <!-- <p class="category"></p> -->
@@ -211,21 +211,21 @@
                     </thead>
                     <tbody>
                       <tr
-                        v-for="c in classes"
-                        :key="c.id">
-                        <td>{{c.code}}</td>
-                        <td>{{c.title}}</td>
-                        <td>{{c.subTitle}}</td>
+                        v-for="l in lessons"
+                        :key="l.id">
+                        <td>{{l.code}}</td>
+                        <td>{{l.title}}</td>
+                        <td>{{l.subTitle}}</td>
                         <td class="td-actions">
                           <button
                             type="button"
-                            @click="updateClass(c)"
+                            @click="updateLesson(l)"
                             class="btn btn-simple btn-warning btn-sm btn-xs">
                             <i class="material-icons">edit</i>
                           </button>
                           <button
                             type="button"
-                            @click="removeClass(c)"
+                            @click="removeLesson(l)"
                             class="btn btn-simple btn-danger btn-sm btn-xs">
                             <i class="material-icons">delete</i>
                           </button>
@@ -238,7 +238,7 @@
             </div>
 
             <router-link
-              :to="{ name: 'class' }"
+              :to="{ name: 'lesson' }"
               class="btn btn-simple pull-left">
               <i class="material-icons">chevron_left</i>
               Voltar
@@ -260,20 +260,33 @@ import Input from '@/components/shared/Input'
 import Radio from '@/components/shared/Radio'
 import Autocomplete from '@/components/shared/Autocomplete'
 
+import _ from 'lodash'
+
 import validation from '@/shared/validationDirective'
 
 import utils from '@/shared/utils'
 
+const emptyLessonModel = { fase: {}, module: {}, specialWeek: {} }
+
 export default {
-  name: 'ClassEdit',
+  name: 'LessonEdit',
   props: {
     id: {
       type: String,
       default: null
     },
+    type: {
+      type: String,
+      validator: value => [
+        'fase',
+        'modulo',
+        'semana-especial',
+        'aula'
+      ].includes(value)
+    },
     lesson: {
       type: Object,
-      default: () => ({ fase: {}, module: {}, specialWeek: {} })
+      default: null
     }
   },
   data () {
@@ -283,12 +296,12 @@ export default {
       loading: false,
       saving: false,
       relation: 'none',
-      model: this.lesson,
-      validation: { fase: {}, module: {}, specialWeek: {} },
+      model: _.clone(emptyLessonModel),
+      validation: _.clone(emptyLessonModel),
       modules: [],
       fases: [],
       specialWeeks: [],
-      classes: []
+      lessons: []
     }
   },
   created () {
@@ -296,33 +309,69 @@ export default {
       this.modules.push({ id: i, name: `module ${i}` })
       this.fases.push({ id: i, name: `fase ${i}` })
       this.specialWeeks.push({ id: i, title: `special week ${i}` })
-      if (i < 4) this.classes.push({ id: i, title: `aula ${i}` })
+      if (i < 4) this.lessons.push({ id: i, title: `aula ${i}` })
     }
 
-    this.isAdd = this.$route.name === 'classAdd'
+    this.isAdd = this.$route.name === 'lessonAdd'
 
-    if (this.model.id) {
+    // define relation
+    switch (this.type) {
+      case 'modulo':
+        this.relation = 'fase'
+        break
+      case 'semana-especial':
+        this.relation = 'specialWeek'
+        break
+      case 'fase':
+        this.relation = 'fase'
+        break
+    }
+
+    const populateModel = lesson => {
+      const autocompleteId = _.pick(lesson, 'id')
+      switch (this.type) {
+        case 'aula':
+          lesson.fase = {}
+          lesson.module = {}
+          lesson.specialWeek = {}
+          this.model = lesson
+
+          if (this.type === 'aula') {
+            if (this.model.faseId) this.relation = 'fase'
+            else if (this.model.specialWeekId) this.relation = 'specialWeek'
+            else this.relation = 'none'
+          }
+          break
+        case 'modulo':
+          this.model.module = autocompleteId
+          break
+        case 'semana-especial':
+          this.model.specialWeek = autocompleteId
+          break
+        case 'fase':
+          this.model.fase = autocompleteId
+          break
+      }
+    }
+
+    if (this.lesson && this.lesson.id) {
+      populateModel(this.lesson)
+
       utils.convertDateInObject(this.model)
-      this.defineRelation()
-    } else if (this.id) {
+    } else if (this.type === 'aula' && this.id) {
       this.loading = true
       this.$api.lesson.getById({ id: this.id })
         .then(data => {
           this.loading = false
           if (data.success) {
-            this.model = utils.convertDateInObject(data.data)
-            this.defineRelation()
+            data.data = utils.convertDateInObject(data.data)
+            populateModel(data.data)
           } else utils.handleApiError(data, 'buscar aula')
         })
         .catch(() => { this.loading = false })
     }
   },
   methods: {
-    defineRelation () {
-      if (this.model.moduleId) this.relation = 'fase'
-      else if (this.model.specialWeekId) this.relation = 'specialWeek'
-      else this.relation = 'none'
-    },
     add () {
       this.submited = true
       this.saving = true
@@ -331,7 +380,7 @@ export default {
           this.saving = false
           if (data.success) {
             this.$notify.success('Aula salva com sucesso')
-            this.$router.push({ name: 'class' })
+            this.$router.push({ name: 'lesson' })
           } else utils.handleApiError(data, 'salvar aula')
         })
         .catch(() => { this.saving = false })
@@ -344,21 +393,21 @@ export default {
           this.saving = false
           if (data.success) {
             this.$notify.success('Aula salva com sucesso')
-            this.$router.push({ name: 'class' })
+            this.$router.push({ name: 'lesson' })
           } else utils.handleApiError(data, 'salvar aula')
         })
         .catch(() => { this.saving = false })
     },
-    updateClass (c) {
+    updateLesson (c) {
       this.model = c
     },
-    removeClass (c) {
+    removeLesson (c) {
       this.saving = true
       this.$api.lesson.delete({ id: c.id })
         .then(data => {
           if (data.success) {
-            this.$notify.undo('Aula removida', this.restoreClass.bind(this, c))
-            this.classes = this.classes.filter(cl => cl.id !== c.id)
+            this.$notify.undo('Aula removida', this.restoreLesson.bind(this, c))
+            this.lessons = this.lessons.filter(cl => cl.id !== c.id)
           } else utils.handleApiError(data, 'remover aula')
         })
     }

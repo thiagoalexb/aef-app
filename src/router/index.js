@@ -4,8 +4,8 @@ import Router from 'vue-router'
 import Home from '@/components/admin/Home'
 import Calendar from '@/components/admin/Calendar'
 import Book from '@/components/admin/Book'
-import Class from '@/components/admin/Class'
-import ClassEdit from '@/components/admin/ClassEdit'
+import Lesson from '@/components/admin/Lesson'
+import LessonEdit from '@/components/admin/LessonEdit'
 import Post from '@/components/admin/Post'
 import User from '@/components/admin/User'
 import UserEdit from '@/components/admin/UserEdit'
@@ -54,8 +54,8 @@ export default new Router({
     },
     {
       path: '/aula',
-      name: 'class',
-      component: Class,
+      name: 'lesson',
+      component: Lesson,
       meta: {
         title: 'Aulas',
         icon: 'tv',
@@ -64,18 +64,18 @@ export default new Router({
     },
     {
       path: '/aula/adicionar',
-      name: 'classAdd',
-      component: ClassEdit,
-      props: true,
+      name: 'lessonAdd',
+      component: LessonEdit,
+      props: { type: 'aula' },
       meta: {
         title: 'Adicionar Aula',
         show: false
       }
     },
     {
-      path: '/aula/atualizar',
-      name: 'classEdit',
-      component: ClassEdit,
+      path: '/aula/atualizar/:type/:id',
+      name: 'lessonEdit',
+      component: LessonEdit,
       props: true,
       meta: {
         title: 'Atualizar Aula',
